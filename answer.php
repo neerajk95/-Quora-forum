@@ -4,6 +4,7 @@ include 'include/db.connect.php';
 include 'include/Validation.php';
 include 'include/pagination.php';
 
+//--------------------------------------------------------------------------------------------------------------------------
 $questionId=$_SESSION['ques_id'];
 $sql="SELECT users_info.userName as aUserName,users_info.userImage,questions.userName as qUserName,questions.post, questions.question,answer.answer,answer.ansImg,answer.DT FROM questions INNER JOIN answer on questions.ques_id=$questionId and answer.ques_id=$questionId INNER JOIN users_info on answer.userName=users_info.userName ORDER by  answer.DT desc ";
 
@@ -26,7 +27,11 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 	$dataSet = $data->get();
 	$pageNumber = $data->pageNumber("SELECT * FROM `answer` where `ques_id`=$questionId");
 }
+//--------------------------------------------------------------------------------------------------------------------------
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 
+	echo "hello";
+}
 
 
 ?>
@@ -56,7 +61,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 	</script>
 
 	<?php
-    include 'partials/navbar.php';
+    //include //'partials/navbar.php';
 ?>
 
 
@@ -95,11 +100,14 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 			</div>
 			<div class="user-post my-4">
 			'.nl2br($aSet['answer']).'
+			<form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>
 			<div class="container flex my-4">
-				<button type="button" class="btn btn-primary">Likes(12)</button>
-				
-				<button type="button" class="btn btn-primary">Dislikes(1)</button>
 			
+				<button type="submit" class="btn btn-primary" name="postfeedback" value="">Likes(12)</button>
+				
+				<button type="submit" class="btn btn-primary" name="postfeedback" value="">Dislikes(1)</button>
+			</form>
+
 				<button type="button" class="btn btn-primary">Comments</button>	
 			</div>
 			<div class="container rounded comment my-4">
