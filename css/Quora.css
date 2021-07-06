@@ -1,0 +1,132 @@
+*{
+  margin: 0;
+  padding:0;
+}
+.ask-questions{
+  height: 50%;
+  cursor: pointer;
+}
+.container{
+  border: 2px solid black;
+  width:650px !important;
+  background-color:white !important;
+  padding:10px;
+  border:1px solid #ccc!important;
+  font-size: 16px !important;
+  justify-content: center!important;
+}
+
+.user-name{
+  color:black!important;
+}
+.user-name-ques{
+  color:#939598;
+}
+.user-container{
+  display:flex;
+  flex-wrap:wrap;
+  align-items: flex-start;
+}
+.user-container p{
+    color:rgb(160, 149, 149);
+}
+.container .user-container *{
+  margin:2px;
+}
+.user-img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+}
+.user-college{
+  position: absolute;
+  align-self:center;
+  margin-left:46px !important;
+  margin-top:25px !important;
+}
+
+.user-post img{
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  width: 100%;
+}
+.categories{
+  display: flex;
+  font-size: 14px;
+  box-sizing: border-box;
+  max-width:34% !important;
+  position: absolute;
+  margin:10px;
+}
+.categories li{
+  list-style-type:none;
+  padding:10px;
+  margin:10px;
+  cursor: pointer;
+}
+.categories li a{
+  text-decoration: none;
+  color:#333;
+}
+.categories li:hover{
+background-color:#ddd;
+
+}
+.user-likes{
+  display: flex;
+  flex-direction: row;
+}
+.categories li a img{
+  width: 35px;
+  height: 35px;
+}
+.question h4{
+  padding:15px !important;
+  color:#939598;;
+}
+
+.user-likes {
+  display: flex;
+}
+
+.likes {
+  width:30xp;
+   height: 30px;
+   margin:10px;
+   cursor:pointer;
+}
+.dislikes {
+  width:30px;
+   height: 30px;
+   margin-top:16px;
+   margin-left:10px;
+   margin-right:5px;
+   cursor: pointer;
+}
+.modal-body{
+  padding-left:15px !important;
+}
+.modal-class-question{
+  margin-left:10px !important;
+}
+.error{
+  color:red;
+}
+.rules{
+  margin-left:10px;
+}
+
+/* -----------------------------------Textarea----------------------------- */
+#textarea{
+border:none;
+
+}
+
+/* ---------------------------------------MediaQuery--------------------- */
+@media screen and (max-width:  600px) {
+  .container{
+    width: 480px !important;
+  }
+}

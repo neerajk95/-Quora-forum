@@ -1,0 +1,26 @@
+.thread_details {
+    width: 50%;
+}
+.thread-img{
+    margin:10px !important;
+    border-radius:50% !important;
+}
+.thread-deatils h1{
+ font-style:bold !important;
+ font-weight: 300;
+ 
+}
+.thread_details p{
+    font-size:1.3rem !important;
+}
+.thread-list{
+    border:1px solid #cccc!important;
+    width:65%;
+    margin:auto;
+    line-height: 1.4
+    
+}
+.anchor  a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: inherit;
+}

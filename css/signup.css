@@ -1,0 +1,90 @@
+.input{
+    margin:15px;
+    width:400px!important;
+}
+body{
+    background-color:#f0f2f5 !important;
+}
+
+.log-center{
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+.log-center span{
+    color: #202124;
+    padding:0;
+    font-family: 'Google Sans','Noto Sans Myanmar UI',arial,sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.3333;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.container{
+    display: flex;
+    background-color: white !important;
+    justify-content: center;
+    align-items: center; 
+    width:491px !important;
+    padding: 43px !important ;
+    border-radius:4px;
+    border:1px solid #ccc !important;
+    box-shadow: 0 10px 16px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%) !important;
+    margin-top:130px !important;
+}
+ 
+.button-bottom{
+    display:flex;
+    justify-content: center;
+    margin-top:20px !important;
+    }
+.button-bottom button{
+        width:50%;
+    }
+.alert{
+    color: red;
+    margin:0px !important;
+    position: relative;
+    padding: 0px !important;
+    border:none; 
+    border-radius:none;
+}
+.forgot{
+    display: flex;
+    justify-content:space-between;
+    margin:0 !important;
+}
+.formerror{
+    font-weight: 400;
+    color:red;
+}
+.fullName{
+    display:flex;
+    justify-content: space-between;
+    margin:15px;
+}
+.nameInput{
+     width:160px !important;
+}
+.error{
+    color: red;
+}
+
+/* -------------------------Media Query--------------------- */
+@media screen and (max-width:  600px) {
+    body{
+        background-color:white !important; 
+    }
+    .container{
+     display: flex;
+     justify-content: center;
+     align-items: center; 
+     width:none !important;
+     border:none !important;
+     box-shadow: none !important;
+     margin-top: 90px !important; 
+    }
+
+ }
+ 
