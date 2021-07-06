@@ -28,9 +28,13 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 	$pageNumber = $data->pageNumber("SELECT * FROM `answer` where `ques_id`=$questionId");
 }
 //--------------------------------------------------------------------------------------------------------------------------
-if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 
-	echo "hello";
+
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
+	$fUserName=$_SESSION['userName'];
+	$fQuestionId=
+	$feedbackInsert=new InsertData();
+	$feedbackInsert->query("INSERT INTO `answer-feedback` (`ans_Id`, `ques_id`, `Likes`, `dislikes`, `datetime`) VALUES ('67', '98', 'kirsh123', 'kirsh123', '2021-07-06 15:53:18.000000')");
 }
 
 
@@ -100,12 +104,12 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 			</div>
 			<div class="user-post my-4">
 			'.nl2br($aSet['answer']).'
-			<form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>
+
+			<form method="post" action="'.$_SERVER["PHP_SELF"].'">
 			<div class="container flex my-4">
-			
-				<button type="submit" class="btn btn-primary" name="postfeedback" value="">Likes(12)</button>
-				
-				<button type="submit" class="btn btn-primary" name="postfeedback" value="">Dislikes(1)</button>
+				<input type="text" style="display: none;" name="answerId" value="'.$aSet[ans_id].'">;
+				<button type="submit" class="btn btn-primary"  id="like" name="postfeedback" value="">Likes(12)</button>
+				<button type="submit" class="btn btn-primary" id="dislike" name="postfeedback" value="">Dislikes(1)</button>
 			</form>
 
 				<button type="button" class="btn btn-primary">Comments</button>	
