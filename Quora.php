@@ -24,16 +24,15 @@
 	<!-- <link rel="stylesheet" href="css/navbar.css"> -->
 	<link rel="stylesheet" href="css/Quora.css">
 	<link rel="stylesheet" href="css/navbar.css">
+	<script src="script/jquery.js"></script>
+	<script src="script/quora.js"></script>
 	<title>Quora</title>
-</head>
+	</head>
 
 <body>
 
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-		crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
@@ -57,10 +56,22 @@
 		<div class="question">
 			<h4 class="text-center">Click here! To add a Questions</h4>
 		</div>
+		<div class="error text-center">
+			<?php echo $errors['exceed'] ?? ''; ?>
+		</div>
+		<div class="error text-center">
+			<?php echo $errors['question'] ?? ''; ?>
+		</div>
+		<div class="error text-center">
+			<?php echo $errors['questExist'] ?? ''; ?>
+		</div>
+		<div class="error text-center">
+			<?php echo $errors['question-added'] ?? ''; ?>
+		</div>
 	</div>
 
 
-	<div class="container my3 question-editor">
+	<div class="container my3 question-editor" style="display:none">
 		<div class="rules">
 			<h4>Tips on getting good answers quickly</h4>
 			<ul class"modal-class-question">
@@ -71,31 +82,32 @@
 		</div>
 		<form name="Modal-form" method="post">
 			<div class="question-input-box">
-				<div class="error text-center">
-					<?php echo $errors['exceed'] ?? ''; ?>
-				</div>
-				<div class="error text-center">
-					<?php echo $errors['question'] ?? ''; ?>
-				</div>
-				<div class="error text-center">
-					<?php echo $errors['questExist'] ?? ''; ?>
-				</div>
-				<div class="error text-center">
-					<?php echo $errors['question-added'] ?? ''; ?>
-				</div>
-
 				<textarea type="text" name="question" class="form-control"
 					placeholder="Write Your Questions here. Limit 120 Characters"
 					aria-label="Username" aria-describedby="addon-wrapping"></textarea>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-				<button type="submit" name="modal-question" class="btn btn-success">Add
+				<button type="submit" name="modal-question"  class="btn btn-success">Add
 					question</button>
+				
+				<button type="button" class="btn btn-danger" id="modalClose" data-dismiss="modal">Close</button>
+				
 			</div>
 		</form>
+		
 	</div>
+	safasf
+<script>
 
+	$('.lol').click(function(){
+		$('.question-editor').show();
+
+	});
+
+	$('#modalClose').click(function(){
+		$('.question-editor').hide();
+	});
+</script>
 
 
 	<!-- <div class="container my-3">
