@@ -84,6 +84,7 @@ class ModalVal extends Validation{
 	public function validateForm()
 	{
 		$this->validateEmpty('question','question');
+		$this->validateEmpty('question','question');
 		$this->checkStringLength();
 		return $this->errors;
 
