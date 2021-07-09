@@ -4,6 +4,7 @@
 if(isset($_POST['modal-question'])){
   if(isset($_SESSION['userName']) && $_SESSION['login']=true){
 $userName=$_SESSION['userName'];
+echo $userName;
 $question=$_POST['question'];
 
 $validate=new ModalVal($_POST);
@@ -24,7 +25,7 @@ if($errors==NULL){
 
 $result=$validate->addingQuestionMark($question);
 $questionWithMarks=$result;
-
+echo $userName;
 
 //Instanseiting function to insert data to datbase
 $insertQuestion=new InsertData();

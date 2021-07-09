@@ -1,8 +1,15 @@
-$('.lol').click(function(){
-	$('.question-editor').show();
-
+$('#questionAskedByYou').click(function(){
+	$('#questionAskedByYou').addClass("active");
+	$('#questions').removeClass("active");
+	$('#answerdByYou').removeClass("active");
 });
-
-$('#modalClose').click(function(){
-	$('.question-editor').hide();
+$('#questions').click(function(){
+	$('#questions').addClass("active");
+	$('#questionAskedByYou').removeClass("active");
+	$('#answerdByYou').removeClass("active");
+});
+$('#answerdByYou').click(function(){
+	$('#answerdByYou').addClass("active");
+	$('#questions').removeClass("active");
+	$('#questionAskedByYou').removeClass("active");
 });

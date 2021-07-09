@@ -169,7 +169,7 @@ $errors=$validation->validateForm();
 
 
 
-
+<?php include 'partials/footer.php';?>
 </body>
 
 </html>

@@ -11,39 +11,40 @@ require 'include/Validation.php';
 require 'include/pagination.php';
 $userName = $_SESSION['userName'];
 
+ $data=new Pagination("SELECT * from `questions` where `userName`='$userName' order by `questions`.`post` desc",10,0);
+ $questionSet=$data->get();
+ $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
+ 
+  if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])){
 
-// //Default code for pagination
- $data = new Pagination("SELECT * from `questions` order by `questions`.`post` desc", 10, 0);
- $questionSet = $data->get(0);
- $pageNumber = $data->pageNumber("SELECT * FROM `questions`");
+  $value = htmlspecialchars($_REQUEST['pagebutton']);
 
- if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
- 	$value = htmlspecialchars($_REQUEST['pagebutton']);
+ // //Setting the limit and offset to retrive required data
+  $offset=$value*10;
 
-	// //Setting the limit and offset to retrive required data
- 	$offset = $value * 10;
-
- 	$data = new Pagination("SELECT * from `questions` order by `questions`.`post` desc", 10, $offset);
- 	$questionSet = $data->get();
- 	$pageNumber = $data->pageNumber("SELECT * FROM `questions`");
- }
-
-
-
+  $data=new Pagination("SELECT * from `questions` where `userName`='$userName' order by `questions`.`post` desc",10,$offset);
+  $questionSet=$data->get();
+  $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
+  }
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
+
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-delete'])) {
 	$questionId = htmlspecialchars($_REQUEST['quesid']);
-	$_SESSION['questionId'] = $questionId;
-	header("location:answer.editor.php");
+	$delete=new InsertData();
+	$result=$delete->query(" DELETE FROM `questions` WHERE `ques_id`=$questionId;");
+	echo "<td><a onClick=\"javascript: return confirm('Please confirm deletion');\" href='delete.php?id=".$query2['id']."'>x</a></td><tr>";
+	header("Refresh:0");
+
+}
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-edit'])) {
+	$questionId = htmlspecialchars($_REQUEST['quesid']);
+	$_SESSION['questionIdEdit']=$questionId;
+	header("location:question.editor.php");
+
 }
 
-if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
-	$questionId = htmlspecialchars($_REQUEST['quesid']);
-	$_SESSION['questionId'] = $questionId;
-	header("location:answer.editor.php");
-}
 ?>
 
 <!doctype html>
@@ -55,7 +56,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+		crossorigin="anonymous">
 	<link rel="stylesheet" href="css/questions.css">
 	<link rel="stylesheet" href="css/navbar.css">
 	<title>Questions</title>
@@ -63,17 +66,19 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 
 <body>
 	<!-- Option 1: Bootstrap Bundle with Popper -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+		crossorigin="anonymous"></script>
 
 
 	<?php include 'partials/navbar.php'; ?>
 	<div class="conatiner center">
 		<div class="btn-group">
-			<a href="questions.php" class="btn btn-primary active" id="questions" aria-current="page">Questions</a>
-			<a href="questionAsked.php" class="btn btn-primary" id="questionAskedByYou">Asked By Me</a>
+			<a href="questions.php" class="btn btn-primary " id="questions"
+				aria-current="page">Questions</a>
+			<a href="questionAsked.php" class="btn btn-primary active" id="questionAskedByYou">Asked By Me</a>
 			<a href="questionAns.php" class="btn btn-primary" id="answerdByYou">Answerd By Me</a>
 		</div>
-
 
 		<?php
 		//Retriving questions and displaying it
@@ -86,48 +91,45 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 		<table class="table table-bordered table-hover my-4">
 			<thead class="table-primary">
 				<tr class="table-click">
-					<th scope="col">Asked By</th>
-					<th scope="col" colspan="4">Questions</th>
-					<th scope="col" colspan="2">Posted On</th>
+					<th scope="col" colspan="3">Questions</th>
+					<th scope="col">Posted On</th>
 					<th scope="col">Answer</th>
+					<th scope="col">Delete</th>
 				</tr>
-				</thead>
+			</thead>
 
 			<?php
 			if (empty($questionSet)) {
 				echo('</table>');
-				echo('<p class="text-center" style="color:red"><strong>No one Asked question!</strong></p>');
+				echo('<p class="text-center" style="color:red"><strong>No records!</strong></p>');
 			     
 			   }
 			else{
 			foreach ($questionSet as $question) {
-				if($userName==$question['userName']){
-					$question['userName']="ME";
-				}
 				//echo $question["ques_Id"];	
-			$phpdate = strtotime( $question['post'] );
-			$mysqldate = date( 'j  F, Y g:i a', $phpdate );	
-			echo '	
-			<form method="post" action="'.$_SERVER["PHP_SELF"].'">
+				$phpdate = strtotime( $question['post'] );
+			        $mysqldate = date( 'j  F, Y g:i a', $phpdate );		
+				echo '	
+			<form method="post" action="'.$_SERVER["PHP_SELF"].'">	
 			<input type="text" name="quesid" style="display:none" value="' . $question["ques_Id"] . '">				
  			 <tbody>
   			  <tr>
-   			  <th scope="row" name="qUserName">' . $question["userName"] . '</th>
-     			 <td colspan="4">' . $question["question"] . '</td>
-     			 <td colspan="2">' . $mysqldate . '</td>
-			 <td><button class="btn btn-primary" type="Submit" name="question-click">Answer</button></td> 
+     			 <td colspan="3">' . $question["question"] . '</td>
+     			 <td>' . $mysqldate . '</td>
+			 <td><button class="btn btn-warning" type="Submit" name="question-edit">Edit</button></td> 
+			 <td><button class="btn btn-danger" type="Submit" name="question-delete">Delete</button></td>
    			 </tr>
   			</tbody>
 			</form>
 			
 			';
 			}
-
 		}
 			?>
+		
 
+		</table>
 
-</table>
 		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 			<div class="btn-group me-2" role="group" aria-label="First group">
 				<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">

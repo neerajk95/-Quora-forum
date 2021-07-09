@@ -96,7 +96,6 @@
 		</form>
 		
 	</div>
-	safasf
 <script>
 
 	$('.lol').click(function(){

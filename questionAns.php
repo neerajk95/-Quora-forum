@@ -11,9 +11,11 @@ require 'include/Validation.php';
 require 'include/pagination.php';
 $userName = $_SESSION['userName'];
 
+//Getting question id 
+
 
 // //Default code for pagination
- $data = new Pagination("SELECT * from `questions` order by `questions`.`post` desc", 10, 0);
+ $data = new Pagination("SELECT `question` form `questions` " , 10, 0);
  $questionSet = $data->get(0);
  $pageNumber = $data->pageNumber("SELECT * FROM `questions`");
 
@@ -69,9 +71,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 	<?php include 'partials/navbar.php'; ?>
 	<div class="conatiner center">
 		<div class="btn-group">
-			<a href="questions.php" class="btn btn-primary active" id="questions" aria-current="page">Questions</a>
+			<a href="questions.php" class="btn btn-primary " id="questions" aria-current="page">Questions</a>
 			<a href="questionAsked.php" class="btn btn-primary" id="questionAskedByYou">Asked By Me</a>
-			<a href="questionAns.php" class="btn btn-primary" id="answerdByYou">Answerd By Me</a>
+			<a href="questionAns.php" class="btn btn-primary active" id="answerdByYou">Answerd By Me</a>
 		</div>
 
 
@@ -87,7 +89,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 			<thead class="table-primary">
 				<tr class="table-click">
 					<th scope="col">Asked By</th>
-					<th scope="col" colspan="4">Questions</th>
+					<th scope="col" colspan="3">Questions</th>
 					<th scope="col" colspan="2">Posted On</th>
 					<th scope="col">Answer</th>
 				</tr>
@@ -104,17 +106,15 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['question-click'])) {
 				if($userName==$question['userName']){
 					$question['userName']="ME";
 				}
-				//echo $question["ques_Id"];	
-			$phpdate = strtotime( $question['post'] );
-			$mysqldate = date( 'j  F, Y g:i a', $phpdate );	
-			echo '	
+				//echo $question["ques_Id"];		
+				echo '	
 			<form method="post" action="'.$_SERVER["PHP_SELF"].'">
 			<input type="text" name="quesid" style="display:none" value="' . $question["ques_Id"] . '">				
  			 <tbody>
   			  <tr>
    			  <th scope="row" name="qUserName">' . $question["userName"] . '</th>
-     			 <td colspan="4">' . $question["question"] . '</td>
-     			 <td colspan="2">' . $mysqldate . '</td>
+     			 <td colspan="3">' . $question["question"] . '</td>
+     			 <td colspan="2">' . $question["post"] . '</td>
 			 <td><button class="btn btn-primary" type="Submit" name="question-click">Answer</button></td> 
    			 </tr>
   			</tbody>
