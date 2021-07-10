@@ -92,7 +92,7 @@ if(isset($_GET['delete'])){
 				}
 				//echo $question["ques_Id"];	
 				$phpdate = strtotime( $question['post'] );
-			        $mysqldate = date( 'j  F, Y g:i a', $phpdate );		
+			        $mysqldate = date( 'j  F, Y @ g:i a', $phpdate );		
 				echo '	
 			<form method="GET" action="'.$_SERVER["PHP_SELF"].'">
 			<div class="d-flex  question-lists my-3">
@@ -104,8 +104,8 @@ if(isset($_GET['delete'])){
 			    <div class="d-flex justify-content-between">
 			      <p> by '.$question["userName"].' on '.$mysqldate.'</p>
 			      <div class="edit-btn d-flex justify-content-between">
-			      <p><button type="submit" value="'.$question['ques_Id'].'"  name="edit"  class="btn btn-warning edit">Edit</button></p>
-			      <p><button type="button" id="'.$question["ques_Id"].'" name="delete"  class="btn btn-danger delete">Delete</button></p>
+			      <p><button type="submit" value="'.$question['ques_Id'].'"  name="edit"  class="btn  my-3 btn-warning edit">Edit</button></p>
+			      <p><button type="button" id="'.$question["ques_Id"].'" name="delete"  class="btn my-3 btn-danger delete">Delete</button></p>
 			    </div>
 			    </div>
 			  </div>

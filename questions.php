@@ -38,6 +38,11 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['question-click'])) {
 	$_SESSION['questionId'] = $questionId;
 	header("location:answer.editor.php");
 }
+if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
+	$questionId = $_GET['answer-click'];
+	$_SESSION['ques_id'] = $questionId;
+	header("location:answer.php");
+}
 ?>
 
 <!doctype html>
@@ -107,7 +112,10 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['question-click'])) {
       			 <h3>'.$question['question'].'</h3>
        			<div class="d-flex justify-content-between">
          		 <p>by '.$question["userName"].' on '.$mysqldate.'</p>
-         		 <p><button type="submit"  name="question-click" value="'.$question['ques_Id'].'" class="btn btn-success">Answer</button></p>
+			  <div class="edit-btn d-flex justify-content-between">
+			  <p><button type="submit"  name="answer-click" value="'.$question['ques_Id'].'" class="btn  my-3 btn-primary">View</button></p>
+			  <p><button type="submit"  name="question-click" value="'.$question['ques_Id'].'" class="btn my-3  btn-success">Answer</button></p>
+			</div>
         		</div>
       			</div>
     			</div>
