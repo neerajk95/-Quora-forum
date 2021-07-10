@@ -3,12 +3,14 @@
 	padding:0;
 }
 
+
 .center{
 	justify-content: center !important;
 	margin-top:100px;
 	width:800px !important;
 	margin-left: auto !important;
 	margin-right:auto !important;
+	
 }
 .questionDiv{
 	border:1px solid #ccc!important;
@@ -26,3 +28,30 @@
 .btn{
 	margin-left:5px;
 }
+
+  
+      .question h3{
+	color: #669999;
+      }
+  
+      .question p {
+	color: #5A79A5;
+	font-weight: bold;
+      }
+  
+      .question-lists {
+	background-color: white !important;
+	width: 700px !important;
+	border: 1px solid #ccc !important;
+	border-radius: 10px;
+      }
+  
+    
+      .edit-btn p{
+	margin-left:10px;
+      }
+      .image img {
+	width: 45px;
+	height: 45px;
+	border-radius: 50px;
+      }
