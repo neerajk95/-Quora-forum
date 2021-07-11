@@ -38,10 +38,13 @@ if(isset($_GET['delete'])){
       }
 
       
+        
       if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['edit'])) {
-	$questionId = $_GET['edit'];
-	$_SESSION['questionIdEdit'] = $questionId;
-	header("location:question.editor.php");
+	$answer_id = $_GET['edit'];
+	$_SESSION['answer_id'] = $answer_id;
+	$question_id=$_GET['questionId'];
+	$_SESSION['questionId']=$question_id;
+	header("location:answerUpdate.php");
         }
 
 ?>
@@ -103,7 +106,8 @@ if(isset($_GET['delete'])){
 			    <div class="d-flex justify-content-between">
 			      <p> by '.$question["userName"].' on '.$mysqldate.'</p>
 			      <div class="edit-btn d-flex justify-content-between">
-			      <p><button type="submit" value="'.$question['ans_id'].'"  name="edit"  class="btn my-3 btn-warning edit">Edit Answer</button></p>
+			      <input type="text" style="display:none;" name="questionId" value="'.$question['ques_id'].'">
+			      <p><button type="submit" value="'.$question["ans_id"].'" name="edit"  class="btn my-3 btn-warning ">Edit</button></p>
 			      <p><button type="button" id="'.$question["ans_id"].'" name="delete"  class="btn my-3 btn-danger delete">Delete Answer</button></p>
 			    </div>
 			    </div>
@@ -113,6 +117,7 @@ if(isset($_GET['delete'])){
 			}
 		        }
 			?>
+			
 		<div class="btn-group me-2" role="group" aria-label="Second group">
 			<button type="text" class="btn btn-secondary">page no.</button>
 			<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">

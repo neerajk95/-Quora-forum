@@ -156,7 +156,12 @@ $errors=$validation->validateForm();
 					<div class="error my-2 text-center">
 						<?php echo $errors['fileSize'] ?? ''; ?>
 					</div>
-					<button class="btn sub-btn btn-primary my-4 " type="submit">Submit</button>
+					<div class="d-flex justify-content-around">
+						<button class="btn sub-btn btn-success my-4 "
+							type="submit">Save</button>
+						<a href="questions.php" <button class="btn sub-btn btn-danger my-4 "
+							type="button">cancel</button></a>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -164,12 +169,16 @@ $errors=$validation->validateForm();
 	</section>
 	<br>
 	<br>
+	<script>
+	function myFunction() {
+		let text = document.getElementById("textarea1");
+		text.value = '';}	
+		</script>
 
 
 
 
-
-<?php include 'partials/footer.php';?>
+	<?php include 'partials/footer.php';?>
 </body>
 
 </html>

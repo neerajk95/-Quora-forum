@@ -48,8 +48,5 @@ function f9() {
 	document.getElementById("textarea1").value = " ";
 }
 
-function myFunction() {
-  let text=document.getElementById("textarea1");
-  text.value='';
 
-}
+

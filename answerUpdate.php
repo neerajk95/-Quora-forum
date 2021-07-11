@@ -3,18 +3,16 @@ session_start();
 include 'include/db.connect.php';
 include 'include/Validation.php';
 
-$method="submit";
 //Reteriving the data for answer
-$ans_id=$_SESSION['ans_id'];
-if(isset($_SESSION['ans_id'])){
-	$method="update";
+$ans_id=$_SESSION['answer_id'];
+
 	$getTheAnswer=new Users();
 	$answer=$getTheAnswer->getTheData("select `answer` from `answer` where `ans_id`='$ans_id'");
 	foreach($answer as $answer){
 		$editAns=$answer['answer'];
 	}
-}
-$questionId=$_SESSION['questionId'];
+	
+$questionId=$_SESSION['question_id'];
 
 //Getting all the value from the questions table
 $questionsTable=new Users();
@@ -153,7 +151,11 @@ $errors=$validation->validateForm();
 					<div class="error my-2 text-center">
 						<?php echo $errors['answerText'] ?? ''; ?>
 					</div>
-					<div class="form-group">
+					<div class="image show my-4" style="margin-left:auto; margin-right:auto;">
+						<img src="img/python.jpg"  height=200 width=200 alt="img/userdefault.jpg">
+						<button type="submit" class="btn btn-danger">remove</button>
+					</div>
+					<div class="form-group " style="display: none; margin-left:auto !important; margin-right:auto !important;">
 						<div class="image-upload my-4 text-center">
 							<label class="form-label" for="customFile">Upload Image</label>
 							<input type="file" class="form-control" name="uploadfile"
@@ -168,7 +170,10 @@ $errors=$validation->validateForm();
 					<div class="error my-2 text-center">
 						<?php echo $errors['fileSize'] ?? ''; ?>
 					</div>
-					<button class="btn sub-btn btn-primary my-4 " type="submit">Submit</button>
+					<div class="d-flex justify-content-around">
+					<button class="btn sub-btn btn-success my-4 " type="submit">update</button>
+				<a href="questionAns.php"<button class="btn sub-btn btn-danger my-4 " type="button">cancel</button></a>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -177,11 +182,6 @@ $errors=$validation->validateForm();
 	<br>
 	<br>
 
-
-
-
-
-<?php include 'partials/footer.php';?>
 </body>
 
 </html>
