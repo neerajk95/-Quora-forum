@@ -3,7 +3,7 @@
   padding:0;
 }
 .answer-post{
-    margin-top:125px;
+    margin-top:60px;
     justify-content: center !important;
     width:700px  !important;
     margin-left: auto;
@@ -98,15 +98,6 @@
     margin-left:46px !important;
     margin-top:25px !important;
   }
-  
-  .user-post img{
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%;
-    width: 100%;
-  }
-
   .categories{
     display: flex;
     font-size: 14px;
@@ -174,7 +165,14 @@
 	background-color: #336699 !important;
 	border-color: #336699 !important;
 }
-
+.squareImage {
+  border: 1px solid #ddd;	/* thickness and color of border */
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  height: 500px !important;
+  width: 500px;			/* height of image (px or % or auto) */
+}
   /* ---------------------------------------MediaQuery--------------------- */
 @media screen and (max-width:  600px) {
   .answer-post{

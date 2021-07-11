@@ -3,10 +3,12 @@ session_start();
 include 'include/db.connect.php';
 include 'include/Validation.php';
 include 'include/pagination.php';
+$userName=$_SESSION['userName'];
+$questionId=$_SESSION['ques_id'];
 
 //--------------------------------------------------------------------------------------------------------------------------
-$questionId=$_SESSION['ques_id'];
-$sql="SELECT users_info.userName as aUserName,users_info.userImage,questions.userName as qUserName,questions.post, questions.question,answer.answer,answer.ansImg,answer.DT FROM questions INNER JOIN answer on questions.ques_id=$questionId and answer.ques_id=$questionId INNER JOIN users_info on answer.userName=users_info.userName ORDER by  answer.DT desc ";
+
+$sql="SELECT answer.ansImg,answer.ans_id,users_info.userName as aUserName,users_info.userImage,questions.userName as qUserName,questions.post, questions.question,answer.answer,answer.ansImg,answer.DT FROM questions INNER JOIN answer on questions.ques_id=$questionId and answer.ques_id=$questionId INNER JOIN users_info on answer.userName=users_info.userName ORDER by  answer.DT desc ";
 
 $answerSet=new Users();
 $answerCount=$answerSet->getTheData("SELECT * FROM `answer` where `ques_id`=$questionId");
@@ -17,8 +19,19 @@ $data = new Pagination($sql,2,0);
 foreach($dataSet as $aQuestions){
 	$aUserName=$aQuestions['qUserName'];
 	$aQuestion=$aQuestions['question'];
-	$aDate=$aQuestions['post'];
+	$dateTime=$aQuestions['post'];
+	$answerId=$aQuestions['ans_id'];
+	
 }
+echo $answerId;
+//Checking if user already answere the question
+$check=new Users();
+$answerCheck=$check->getTheData("SELECT * FROM `answer` WHERE `ques_id`=$questionId and `ans_id`='$answerId' and `userName`='$userName' ");
+if(!empty($answerCheck)){
+	$displayAnswer="d-none";
+}
+$phpdate = strtotime($dateTime);
+$aDate = date( 'j  F, Y @ g:i a', $phpdate );
 if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 	$value = htmlspecialchars($_REQUEST['pagebutton']);
 	$offset = $value * 2;
@@ -36,7 +49,10 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 	$feedbackInsert=new InsertData();
 	$feedbackInsert->query("INSERT INTO `answer-feedback` (`ans_Id`, `ques_id`, `Likes`, `dislikes`, `datetime`) VALUES ('67', '98', 'kirsh123', 'kirsh123', '2021-07-06 15:53:18.000000')");
 }
-
+if(isset($_POST['answer'])){
+	$_SESSION['questionId']=$questionId;
+	header("location:answer.editor.php");
+}
 
 ?>
 <!doctype html>
@@ -62,10 +78,10 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
 		crossorigin="anonymous">
-	</script>
+		</script>
 
 	<?php
-    //include //'partials/navbar.php';
+    include 'partials/navbar.php';
 ?>
 
 
@@ -73,48 +89,70 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 	<div class="conatner main">
 		<!-- Answer post -->
 		<div class="conatiner answer-post">
-			<h3 class=""><span style="color:#669999">
+			<h1 class=""><span style="color:#669999">
 					<?php echo $aQuestion; ?>
 				</span></h1>
-				<p style="font-weight:bold;">-<span style="color: #5A79A5;">
-						<?php echo $aUserName." ";?><span>
-							<?php echo $aDate;?>
-				</p>
-				<form action="answer.editor.php" method="POST"></form>
-				<p class="answer-btn">Answer</p>
-				</form>
+			<p style="font-weight:bold;">-<span style="color: #5A79A5;">
+					<?php echo $aUserName." ";?><span>
+						<?php echo $aDate;?>
+					</span>
+			</p>
+			<form action="answer.php" method="POST">
+			<button class="answer-btn btn btn-primary <?php echo $displayAnswer ?? ''; ?> " type="submit" name="answer">Answer</button>
+			</form>
 
-				<hr>
-				<p><strong>
-						<?php echo count($answerCount); ?> Answers
-					</strong></p>
-				<hr>
+			<hr>
+			<p><strong>
+					<?php echo count($answerCount); ?> Answers
+				</strong></p>
+			<hr>
 		</div>
 
 		<div class="container post-answer my-4">
 			<?php 
 
 		foreach($dataSet as $aSet)
+				if(empty($aSet)){
+					echo '<p style="color:red";font-weight:bold;>No one Answered</p>';
+				}
+				$phpdate = strtotime( $aSet['DT'] );
+				$mysqldate = date( 'j  F, Y @ g:i a', $phpdate );	
+				if($aSet['ansImg']==Null){
+					$displayImage="d-none";
+				}	
+
+				$string = $aSet['answer'];
+				if (strlen($string) > 1000) {
+				    $limit_text = substr($string, 0, 1000);
+				    $endPoint = strrpos($limit_text, ' ');
+				    $string = $endPoint? substr($limit_text, 0, $endPoint):substr($limit_text, 0);
+				    $string .= '... <a style="cursor: pointer;" href="" >Read More</a>';
+				}
+
 			echo '
 			<div class="user-container">
 				<img class="profile-pic user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
-				<p class="user-college" style="color:#5A79A5;font-weight:bold;">From IIT Kharagpur</p>
+				<p class="user-college" style="color:#5A79A5;font-weight:bold;"></p>
 				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
-				<p class="user-date" style="color:#5A79A5;font-weight:bold;">answerd on '.$aSet["DT"].'</p>
+				<p class="user-date" style="color:#5A79A5;font-weight:bold;">on '.$mysqldate.'</p>
 			</div>
 			<div class="user-post my-4">
-			'.nl2br($aSet['answer']).'
 
+			
+			'.nl2br($string).'
+		        <div class="'.$displayImage .'">
+			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
+			</div>
 			<form method="post" action="'.$_SERVER["PHP_SELF"].'">
-			<div class="container flex my-4">
-				<input type="text" style="display: none;" name="answerId" value="'.$aSet[ans_id].'">;
+			<div class="container  flex my-4">
+				<input type="text" style="display: none;" name="answerId" value="'.$aSet["ans_id"].'">
 				<button type="submit" class="btn btn-primary"  id="like" name="postfeedback" value="">Likes(12)</button>
 				<button type="submit" class="btn btn-primary" id="dislike" name="postfeedback" value="">Dislikes(1)</button>
 			</form>
 
 				<button type="button" class="btn btn-primary">Comments</button>	
 			</div>
-			<div class="container rounded comment my-4">
+			<div class="container d-none rounded comment my-4">
 				<input type="text" class="form-control rounded" id="comment" placeholder="Comment here......">
 			<hr>
 			<div class="container comments">
@@ -124,7 +162,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
 				<p class="user-date" style="color:#5A79A5;font-weight:bold;">Commented on '.$aSet["DT"].'</p>
 			</div>
-			<div class="container comments">
+			<div class="container comments d" style="display:none;">
 			<p class="my-2 comment-left" style="margin-left: 50px; ">Nice One!</p>
 		        </div>	
 			<p class="my-2 text-center"; "><a href="">View Replies</a></p>	
@@ -146,8 +184,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['postfeedback'])) {
 		      			
 		       </div>
 		           
-		       <hr>
-		       ';
+		       <hr>';
 
 ?>
 
