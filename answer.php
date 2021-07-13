@@ -98,7 +98,8 @@ if(isset($_POST['answer'])){
 					</span>
 			</p>
 			<form action="answer.php" method="POST">
-			<button class="answer-btn btn btn-primary <?php echo $displayAnswer ?? ''; ?> " type="submit" name="answer">Answer</button>
+				<button class="answer-btn btn btn-primary <?php echo $displayAnswer ?? ''; ?> "
+					type="submit" name="answer">Answer</button>
 			</form>
 
 			<hr>
@@ -106,8 +107,7 @@ if(isset($_POST['answer'])){
 					<?php echo count($answerCount); ?> Answers
 				</strong></p>
 			<hr>
-		</div>
-
+		</div>	
 		<div class="container post-answer my-4">
 			<?php 
 
@@ -128,8 +128,10 @@ if(isset($_POST['answer'])){
 				    $string = $endPoint? substr($limit_text, 0, $endPoint):substr($limit_text, 0);
 				    $string .= '... <a style="cursor: pointer;" href="" >Read More</a>';
 				}
+				
 
 			echo '
+			
 			<div class="user-container">
 				<img class="profile-pic user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
 				<p class="user-college" style="color:#5A79A5;font-weight:bold;"></p>
@@ -139,7 +141,8 @@ if(isset($_POST['answer'])){
 			<div class="user-post my-4">
 
 			
-			'.nl2br($string).'
+			<p class="show-read-more" >'.nl2br($aSet['answer']).'</p>
+			
 		        <div class="'.$displayImage .'">
 			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
 			</div>
