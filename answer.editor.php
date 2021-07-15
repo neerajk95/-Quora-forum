@@ -159,9 +159,8 @@ $errors=$validation->validateForm();
 					<div class="d-flex justify-content-around">
 						<button class="btn sub-btn btn-success my-4 "
 							type="submit">Save</button>
-						<a href="questions.php" <button class="btn sub-btn btn-danger my-4 "
-							type="button">cancel</button></a>
-					</div>
+						 <button class="btn sub-btn btn-danger my-4 "
+							type="button"  onclick="history.go(-1);">cancel</button>
 				</form>
 			</div>
 		</div>

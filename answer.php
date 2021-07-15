@@ -16,6 +16,7 @@ $data = new Pagination($sql,2,0);
  $dataSet = $data->get(0);
  $pageNumber = $data->pageNumber("SELECT * FROM `answer` where `ques_id`=$questionId");
 
+ 
 foreach($dataSet as $aQuestions){
 	$aUserName=$aQuestions['qUserName'];
 	$aQuestion=$aQuestions['question'];
@@ -71,6 +72,7 @@ if(isset($_POST['answer'])){
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/answer.css">
 	<link rel="stylesheet" href="css/navbar.css">
+	<script src="script/jquery.js" type="text/javascript"></script>
 	<title>Answer</title>
 </head>
 
@@ -78,7 +80,7 @@ if(isset($_POST['answer'])){
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
 		crossorigin="anonymous">
-		</script>
+	</script>
 
 	<?php
     include 'partials/navbar.php';
@@ -107,7 +109,7 @@ if(isset($_POST['answer'])){
 					<?php echo count($answerCount); ?> Answers
 				</strong></p>
 			<hr>
-		</div>	
+		</div>
 		<div class="container post-answer my-4">
 			<?php 
 
@@ -128,7 +130,11 @@ if(isset($_POST['answer'])){
 				    $string = $endPoint? substr($limit_text, 0, $endPoint):substr($limit_text, 0);
 				    $string .= '... <a style="cursor: pointer;" href="" >Read More</a>';
 				}
-				
+				$answerId=$aSet['ans_id'];
+				//Counting likes and dislikes
+				$count=new CheckFields();
+				$likes=$count->check("select * from `likes` where `ans_id`='$answerId'");
+				$dislikes=$count->check("select * from `dislikes` where `ans_id`='$answerId'");		
 
 			echo '
 			
@@ -146,17 +152,17 @@ if(isset($_POST['answer'])){
 		        <div class="'.$displayImage .'">
 			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
 			</div>
-			<form method="post" action="'.$_SERVER["PHP_SELF"].'">
-			<div class="container  flex my-4">
-				<input type="text" style="display: none;" name="answerId" value="'.$aSet["ans_id"].'">
-				<button type="submit" class="btn btn-primary"  id="like" name="postfeedback" value="">Likes(12)</button>
-				<button type="submit" class="btn btn-primary" id="dislike" name="postfeedback" value="">Dislikes(1)</button>
-			</form>
-
-				<button type="button" class="btn btn-primary">Comments</button>	
-			</div>
-			<div class="container d-none rounded comment my-4">
-				<input type="text" class="form-control rounded" id="comment" placeholder="Comment here......">
+			        
+				<button type="button" class="btn btn-primary" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
+				<button type="button" class="btn btn-primary" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
+				<button class="btn btn-primary" id="Comment">Comment</button>
+			<div class="container d-none rounded comment my-4" id="commentDiv">
+				<div class="" style="display: flex;">
+				<textarea type="text" name="question" class="form-control"
+					 placeholder="Write your comment here. Limit 120 Characters"
+					aria-label="Username" id="commentText" aria-describedby="addon-wrapping"></textarea>
+				<button class="btn btn-primary" style="margin-left: 5px !important;"  onclick="comment(\'comment\',\''.$aSet["ans_id"].'\',\''.$userName.'\')">comment</button>
+			        </div>
 			<hr>
 			<div class="container comments">
 			<div class="user-container">
@@ -171,7 +177,9 @@ if(isset($_POST['answer'])){
 			<p class="my-2 text-center"; "><a href="">View Replies</a></p>	
 			<p class="my-2 text-center"; "><a href="">Collaspe</a></p>
 			
-				<input type="text" class="form-control rounded" id="comment" placeholder="Reply here">
+			<textarea type="text" name="question" class="form-control"
+			placeholder="Write your reply here. Limit 120 Characters"
+		       aria-label="Username" id="replyText"  aria-describedby="addon-wrapping"></textarea>
 			
 			<div class="user-container my-2" style="margin-left:50px">
 				<img class="profile-pic lol user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
@@ -187,9 +195,67 @@ if(isset($_POST['answer'])){
 		      			
 		       </div>
 		           
+
 		       <hr>';
 
 ?>
+			<script>
+				//Function for like
+				function like_update(type, like_id, ans_id, ques_id, userName) {
+					console.log("Set ho gya mau");
+					$.ajax({
+						url: 'ajax/likes.php',
+						type: 'post',
+						data: 'lol=like,&like_id=' + like_id + '&ans_id=' + ans_id + '&ques_id=' + ques_id +
+							'&userName=' + userName + '&type=' + type,
+						success: function (result) {
+							$('#like_94').html(result);
+						}
+					})
+				}
+				//Function for dislike
+				function dislike_update(type, like_id, ans_id, ques_id, userName) {
+					console.log("Set ho gya mai dusri barr bhi");
+					$.ajax({
+						url: 'ajax/likes.php',
+						type: 'post',
+						data: 'lol=like,&like_id=' + like_id + '&ans_id=' + ans_id + '&ques_id=' + ques_id +
+							'&userName=' + userName + '&type=' + type,
+						success: function (result) {
+							$('#dislike_94').html(result);
+						}
+					})
+				}
+
+				//Switching commnet
+				$("#Comment").click(function () {
+					console.log("set ho gaya bhai");
+
+					if ($("#commentDiv").hasClass("d-none")) {
+						$(".comment").removeClass("d-none");
+					} else {
+						$(".comment").addClass("d-none");
+					}
+				});
+
+				//Comment jquery
+				function comment(type,ans_id, userName) {
+					console.log("SEFSEFSE");
+					var commentText = $('#commentText').val();
+				
+					$.ajax({
+						url: 'ajax/comment.php',
+						type: 'post',
+						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText+'&type='+type,
+						success: function (result) {
+							console.log(result);
+						}
+					})
+				}
+			</script>
+
+
+
 
 			<div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
 				<div class="btn-group me-2" role="group" aria-label="First group">
