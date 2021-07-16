@@ -156,46 +156,27 @@ if(isset($_POST['answer'])){
 				<button type="button" class="btn btn-primary" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
 				<button type="button" class="btn btn-primary" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
 				<button class="btn btn-primary" id="Comment">Comment</button>
-			<div class="container d-none rounded comment my-4" id="commentDiv">
+			</div> 
+			<div class="container d-none rounded comment" id="commentDiv">
 				<div class="" style="display: flex;">
-				<textarea type="text" name="question" class="form-control"
+				<textarea type="text" name="question" style="margin-top: 0px; margin-bottom: 0px; height: 40px !important;border-radius: 30px!important;" class="form-control"
 					 placeholder="Write your comment here. Limit 120 Characters"
 					aria-label="Username" id="commentText" aria-describedby="addon-wrapping"></textarea>
 				<button class="btn btn-primary" style="margin-left: 5px !important;"  onclick="comment(\'comment\',\''.$aSet["ans_id"].'\',\''.$userName.'\')">comment</button>
 			        </div>
-			<hr>
-			<div class="container comments">
+			</div>
+		
+			<div>
+			<div class="container commentdiv " style="margin:0;" >
 			<div class="user-container">
 				<img class="profile-pic lol user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
 				<p class="user-college" style="color:#5A79A5;font-weight:bold;"><a href="like">like</a> (12) <a href="">dislike</a> (1) <a href="">reply</a></p>
 				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
-				<p class="user-date" style="color:#5A79A5;font-weight:bold;">Commented on '.$aSet["DT"].'</p>
+				<p class="user-date" style="color:#5A79A5;font-weight:bold;">12 jan 2019 @ 12:20</p>
+				
 			</div>
-			<div class="container comments d" style="display:none;">
-			<p class="my-2 comment-left" style="margin-left: 50px; ">Nice One!</p>
-		        </div>	
-			<p class="my-2 text-center"; "><a href="">View Replies</a></p>	
-			<p class="my-2 text-center"; "><a href="">Collaspe</a></p>
-			
-			<textarea type="text" name="question" class="form-control"
-			placeholder="Write your reply here. Limit 120 Characters"
-		       aria-label="Username" id="replyText"  aria-describedby="addon-wrapping"></textarea>
-			
-			<div class="user-container my-2" style="margin-left:50px">
-				<img class="profile-pic lol user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
-				<p class="user-college" style="color:#5A79A5;font-weight:bold;"><a href="like">like</a> (12) <a href="">dislike</a> (1) <a href="">reply</a></p>
-				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
-				<p class="user-date" style="color:#5A79A5;font-weight:bold;">Replied on '.$aSet["DT"].'</p>
-			</div>
-			<p class="" style="margin-left:100px; ">Thanks</p>
-			<p class="my-2 text-center"; "><a href="">Show more</a></p>	
-			<p class="my-2 text-center"; "><a href="">Collaspe</a></p>		
-		        </div>
-			</div>
-		      			
-		       </div>
-		           
-
+			<pre class="my-3 pre">so rambunctious that his mother q.</pre>
+		      	</div>		
 		       <hr>';
 
 ?>
@@ -238,19 +219,18 @@ if(isset($_POST['answer'])){
 					}
 				});
 
-				//Comment jquery
-				function comment(type,ans_id, userName) {
-					console.log("SEFSEFSE");
+				function comment(ans_id, userName) {
 					var commentText = $('#commentText').val();
-				
+					document.getElementById("commentText").value=null;
 					$.ajax({
 						url: 'ajax/comment.php',
 						type: 'post',
-						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText+'&type='+type,
+						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&comment'+commentText,
 						success: function (result) {
-							console.log(result);
+							
 						}
 					})
+					 
 				}
 			</script>
 

@@ -47,11 +47,12 @@
 .comment{
   border: 2px solid black;
   width:720px !important;
-  background-color:#f1f2f2 !important;
+  background-color:#f7f7f8 !important;
   padding:10px;
   border:1px solid #ccc!important;
   font-size: 16px !important;
   justify-content: center!important;
+  margin-top:10px !important;
 }
 .comments-input{
   border: 2px solid black;
@@ -172,6 +173,16 @@
   margin-right: auto;
   height: 500px !important;
   width: 500px;			/* height of image (px or % or auto) */
+}
+.commentdiv{
+  border: 2px solid black;
+  width:720px !important;
+  background-color:#f7f7f8 !important;
+  padding:10px;
+  border:1px solid #ccc!important;
+  font-size: 16px !important;
+  justify-content: center!important;
+  margin:0px !important;
 }
   /* ---------------------------------------MediaQuery--------------------- */
 @media screen and (max-width:  600px) {

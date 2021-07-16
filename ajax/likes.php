@@ -1,17 +1,14 @@
 <?php
 include '../include/db.connect.php';
 
-// $type = $_POST['type'];
-// $like_id = $_POST['like_id'];
-// $answerId = $_POST['ans_id'];
-// $questionId =$_POST['ques_id'];
-// $userName = $_POST['userName'];
+ $type = $_POST['type'];
+ $like_id = $_POST['like_id'];
+ $answerId = $_POST['ans_id'];
+ $questionId =$_POST['ques_id'];
+ $userName = $_POST['userName'];
 
-$type = "dislike";
-$like_id = "like_94";
-$answerId = 94;
-$questionId =202;
-$userName = "selena";
+
+
 
 
 switch ($type) {
@@ -64,19 +61,15 @@ $get=new Users();
 
 
 $checkFunction= $check->check("$checkSql");
-if ($checkFunction > 0) {
-
-	$delete=$perform->query("$deleteSql");
-}
-else{
+if($checkFunction==0){
         $insert=$perform->query("$insertSql");
+	$delete=$perform->query("$deleteSql");
 }
 
 //Outputing the count of likes and dislikes
-$Set=$get->getTheData("$count");
-$SetDis=$get->getTheData("select * from `dislikes` where `ans_id`='$answerId'");
-echo "dislikes". count($SetDis)."<br>";
-echo "likes". count($Set);
+ $Set=$get->getTheData("$count");
+ echo   count($Set);
+ 
 
 
 
