@@ -128,7 +128,7 @@ if(isset($_POST['answer'])){
 				    $limit_text = substr($string, 0, 1000);
 				    $endPoint = strrpos($limit_text, ' ');
 				    $string = $endPoint? substr($limit_text, 0, $endPoint):substr($limit_text, 0);
-				    $string .= '... <a style="cursor: pointer;" href="" >Read More</a>';
+				    $string .= '... <button style="cursor: pointer;" type="button"  onclick="showText(\'more\',\''.$aSet['ans_id'].'\')" >Read More</button>';
 				}
 				$answerId=$aSet['ans_id'];
 				//Counting likes and dislikes
@@ -147,7 +147,7 @@ if(isset($_POST['answer'])){
 			<div class="user-post my-4">
 
 			
-			<p class="show-read-more" >'.nl2br($aSet['answer']).'</p>
+			<p class="show-read-more"  id="textShow">'.nl2br($string).'</p>
 			
 		        <div class="'.$displayImage .'">
 			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
@@ -183,19 +183,28 @@ if(isset($_POST['answer'])){
 			<script>
 				//Function for like
 				function like_update(type, like_id, ans_id, ques_id, userName) {
-					console.log("Set ho gya mau");
+					var str = like_id.substring(4);
+					var dislike_id="dislike".concat(str);
+					console.log(dislike_id);
 					$.ajax({
 						url: 'ajax/likes.php',
 						type: 'post',
 						data: 'lol=like,&like_id=' + like_id + '&ans_id=' + ans_id + '&ques_id=' + ques_id +
 							'&userName=' + userName + '&type=' + type,
 						success: function (result) {
-							$('#like_94').html(result);
+							console.log(result[0]);
+							console.log(result[1]);
+							$('#'+like_id).html(result[0]);
+							$('#'+dislike_id).html(result[1]);
+
 						}
 					})
 				}
 				//Function for dislike
 				function dislike_update(type, like_id, ans_id, ques_id, userName) {
+					var str = like_id.substring(7);
+					var dislike_id="like".concat(str);
+					console.log(dislike_id);
 					console.log("Set ho gya mai dusri barr bhi");
 					$.ajax({
 						url: 'ajax/likes.php',
@@ -203,7 +212,8 @@ if(isset($_POST['answer'])){
 						data: 'lol=like,&like_id=' + like_id + '&ans_id=' + ans_id + '&ques_id=' + ques_id +
 							'&userName=' + userName + '&type=' + type,
 						success: function (result) {
-							$('#dislike_94').html(result);
+							$('#'+like_id).html(result[1]);
+							$('#'+dislike_id).html(result[0]);
 						}
 					})
 				}
@@ -220,14 +230,29 @@ if(isset($_POST['answer'])){
 				});
 
 				function comment(ans_id, userName) {
+					console.log("Comment set");
 					var commentText = $('#commentText').val();
-					document.getElementById("commentText").value=null;
+					console.log(commentText);
+					//document.getElementById("commentText").value=null;
 					$.ajax({
 						url: 'ajax/comment.php',
 						type: 'post',
-						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&comment'+commentText,
+						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&commentText'+commentText,
 						success: function (result) {
 							
+						}
+					})
+					 
+				}
+				function showText(type, ans_id) {
+					console.log("text show karega");
+					//document.getElementById("commentText").value=null;
+					$.ajax({
+						url: 'ajax/textShow.php',
+						type: 'post',
+						data: 'lol=like,&ans_id=' + ans_id + '&type=' + type,
+						success: function (result) {
+							$('#'+textShow).html(result);
 						}
 					})
 					 
