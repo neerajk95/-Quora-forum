@@ -128,7 +128,7 @@ if(isset($_POST['answer'])){
 				    $limit_text = substr($string, 0, 1000);
 				    $endPoint = strrpos($limit_text, ' ');
 				    $string = $endPoint? substr($limit_text, 0, $endPoint):substr($limit_text, 0);
-				    $string .= '... <button style="cursor: pointer;" type="button"  onclick="showText(\'more\',\''.$aSet['ans_id'].'\')" >Read More</button>';
+				    $string .= '... <a style="cursor: pointer; color:rgb(52, 124, 219);text-decoration: underline;"   onclick="showText(\'more\',\''.$aSet['ans_id'].'\')" >Read More</a>';
 				}
 				$answerId=$aSet['ans_id'];
 				//Counting likes and dislikes
@@ -144,8 +144,7 @@ if(isset($_POST['answer'])){
 				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
 				<p class="user-date" style="color:#5A79A5;font-weight:bold;">on '.$mysqldate.'</p>
 			</div>
-			<div class="user-post my-4">
-
+			<div class="user-post my-4"> 
 			
 			<p class="show-read-more"  id="textShow">'.nl2br($string).'</p>
 			
@@ -153,9 +152,9 @@ if(isset($_POST['answer'])){
 			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
 			</div>
 			        
-				<button type="button" class="btn btn-primary" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
-				<button type="button" class="btn btn-primary" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
-				<button class="btn btn-primary" id="Comment">Comment</button>
+				<button type="button" class="btn  btn-outline-danger" id="like_btn" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
+				<button type="button" class="btn  btn-outline-danger" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
+				<button class="btn btn-primary" id="Comment" onclick="showComment(\'retriveComment\'.\''.$aSet['ans_id'].'\')">Comment</button>
 			</div> 
 			<div class="container d-none rounded comment" id="commentDiv">
 				<div class="" style="display: flex;">
@@ -194,11 +193,24 @@ if(isset($_POST['answer'])){
 						success: function (result) {
 							console.log(result[0]);
 							console.log(result[1]);
+							console.log(result[2]);
 							$('#'+like_id).html(result[0]);
 							$('#'+dislike_id).html(result[1]);
 
+							if(typeof result[2] === 'undefined') {
+								$('#like_btn').addClass('btn-danger');
+								$('#like_btn').addClass('btn-danger');
+								console.log("hrry");
+									}
+							// else{
+							// 	$('#'+like_id).removeClass('btn-danger');
+							// }		
+							// if ($( '#'+dislike_id).hasClass('btn-danger')){
+							// 	$('#'+dislike_id).removeClass('btn-danger')
+							// }
 						}
 					})
+					
 				}
 				//Function for dislike
 				function dislike_update(type, like_id, ans_id, ques_id, userName) {
@@ -214,22 +226,35 @@ if(isset($_POST['answer'])){
 						success: function (result) {
 							$('#'+like_id).html(result[1]);
 							$('#'+dislike_id).html(result[0]);
+
 						}
 					})
 				}
 
 				//Switching commnet
-				$("#Comment").click(function () {
+			    function showComment(type,ans_id){
+			                      
 					console.log("set ho gaya bhai");
-
 					if ($("#commentDiv").hasClass("d-none")) {
 						$(".comment").removeClass("d-none");
 					} else {
 						$(".comment").addClass("d-none");
+						
 					}
-				});
+				
+					//document.getElementById("commentText").value=null;
+					$.ajax({
+						url: 'ajax/comment.php',
+						type: 'post',
+						data: 'lol=like,&type=' + type +'&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText,
+						success: function (result) {
+							$('#commentText').val('');
+							
+						}
+					})
+			}
 
-				function comment(ans_id, userName) {
+				function comment(type,ans_id, userName) {
 					console.log("Comment set");
 					var commentText = $('#commentText').val();
 					console.log(commentText);
@@ -237,8 +262,9 @@ if(isset($_POST['answer'])){
 					$.ajax({
 						url: 'ajax/comment.php',
 						type: 'post',
-						data: 'lol=like,&ans_id=' + ans_id + '&userName=' + userName+'&commentText'+commentText,
+						data: 'lol=like,&type=' + type +'&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText,
 						success: function (result) {
+							$('#commentText').val('');
 							
 						}
 					})
@@ -252,11 +278,14 @@ if(isset($_POST['answer'])){
 						type: 'post',
 						data: 'lol=like,&ans_id=' + ans_id + '&type=' + type,
 						success: function (result) {
-							$('#'+textShow).html(result);
+							document.getElementById('textShow').value = '';
+							$('#textShow').empty();
+							 $("#textShow").append(result);
 						}
 					})
 					 
 				}
+				
 			</script>
 
 
