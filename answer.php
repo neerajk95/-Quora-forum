@@ -153,6 +153,8 @@ if(isset($_POST['answer'])){
 				        });
 					</script>';
 				}
+				$count=new CheckFields();
+				$commentsNumber=$count->check("SELECT * FROM `comments` where `ans_id`=$answerId");	
 			echo '
 			
 			<div class="user-container">
@@ -194,7 +196,8 @@ if(isset($_POST['answer'])){
 				
 			</div>
 			<pre class="my-3 pre">so rambunctious that his mother q.</pre>
-		      	</div>		
+		      	</div>
+			      <a><p class="text-center" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);">Load More Comments('.$commentsNumber.')</p></a>		
 		       <hr>';
 
 ?>

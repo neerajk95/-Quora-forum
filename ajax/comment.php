@@ -1,15 +1,12 @@
 <?php
 include '../include/db.connect.php' ;
 
-
-
 $type=$_POST['type'];
 $answerId=$_POST['ans_id'];
 $userName=$_POST['userName'];
 $comment=$_POST['commentText'];
 
 $getData=new Users();
-
 
 if($type=="comment")
 {
@@ -28,37 +25,8 @@ if($type=="comment")
 	    <p class="user-date" style="color:#5A79A5;font-weight:bold;">'.$mysqldate.'</p>
    	     </div>
    	    <pre class="my-3 pre">'.$fields['comment'].'</pre>
-	   <a><p class="text-center" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);">Load More Comments('.$commentsNumber.')</p></a>';
+	       </div>
+	  ';
  }
 }
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $limit =1;
-// 	$offset=1;
-// 	 $retriveFields=$getData->getTheData("SELECT u.userImage,c.c_id,c.comment,c.dateTime,c.userName,c.dateTime from comments c join users_info u on u.userName=c.userName where c.ans_id='$answerId' order by c.dateTime desc");
-// 	 foreach($retriveFields as $retriveFields){
-// 		$commentFields= $retriveFields;
-// 	}
-// 	if(!empty($commentFields)){
-// 		 echo $commentFields;
-// 	 }	   
-
-// }
 ?>
-
-
