@@ -18,13 +18,33 @@ echo
     '<div class="head">
         <ul class="ul-list">
         <li class="none"> <a href="Quora.php"> <img src="icon/conversation.png" alt=""></a></li>
-            <li class="nav-items home"><a href="Quora.php">Home </a></li>
-            <li class="nav-items answer"><a href="questions.php">Questions</a></li>
-            <li class="nav-items notification"><a href="">Notification</a></li>
+            <li class="nav-items home" ><a id="home" href="Quora.php">Home </a></li>
+            <li class="nav-items answer" ><a id="question" href="questions.php">Questions</a></li>
+            <li class="nav-items notification" ><a  id="notification" href="">Notification</a></li>
             <form class="d-flex">
                 <input class="form-control search-bar me-2" type="search" placeholder="Search" aria-label="Search">
                
             </form>
+            <script>
+            var currentURL = window.location.href;
+            console.log(currentURL);
+            if(currentURL=="http://localhost/quora/Quora.php"){
+                var element = document.getElementById("home");
+                element.style.backgroundColor = "#ff3333" ; 
+                element.style.color = "white" ; 
+            }
+            if(currentURL=="http://localhost/quora/questions.php"){
+                var element = document.getElementById("question");
+                element.style.backgroundColor = "#ff3333" ; 
+                element.style.color = "white" ; 
+            }
+            if(currentURL=="http://localhost/quora/notification.php"){
+                var element = document.getElementById("notification");
+                element.style.backgroundColor = "#ff3333" 
+                element.style.color = "white" ; 
+            }
+
+            </script>
            ';
         if($login){
             echo'

@@ -13,20 +13,20 @@ $userName = $_SESSION['userName'];
 
 
 // //Default code for pagination
- $data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, 0);
- $questionSet = $data->get(0);
- $pageNumber = $data->pageNumber("SELECT * FROM `questions`");
+$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, 0);
+$questionSet = $data->get(0);
+$pageNumber = $data->pageNumber("SELECT * FROM `questions`");
 
- if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
- 	$value = htmlspecialchars($_REQUEST['pagebutton']);
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
+	$value = htmlspecialchars($_REQUEST['pagebutton']);
 
 	// //Setting the limit and offset to retrive required data
- 	$offset = $value * 6;
+	$offset = $value * 6;
 
- 	$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, $offset);
- 	$questionSet = $data->get();
- 	$pageNumber = $data->pageNumber("SELECT * FROM `questions`");
- }
+	$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, $offset);
+	$questionSet = $data->get();
+	$pageNumber = $data->pageNumber("SELECT * FROM `questions`");
+}
 
 
 
@@ -39,6 +39,7 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['question-click'])) {
 	header("location:answer.editor.php");
 }
 if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
+
 	$questionId = $_GET['answer-click'];
 	$_SESSION['ques_id'] = $questionId;
 	header("location:answer.php");
@@ -59,6 +60,7 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 		crossorigin="anonymous">
 	<link rel="stylesheet" href="css/questions.css">
 	<link rel="stylesheet" href="css/navbar.css">
+	<link rel="script" href="script/jquery.js">
 	<title>Questions</title>
 </head>
 
@@ -89,54 +91,65 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 		?>
 
 		<?php
-			if (empty($questionSet)) {
-				echo('</table>');
-				echo('<p class="my-4 " style="color:red;margin-left:5px;"><strong>No one asked question</strong></p>');
-			     
-			   }
-			else{
+		if (empty($questionSet)) {
+			echo ('</table>');
+			echo ('<p class="my-4 " style="color:red;margin-left:5px;"><strong>No one asked question</strong></p>');
+		} else {
 			foreach ($questionSet as $question) {
-				if($userName==$question['userName']){
-					$question['userName']="you";
+				if ($userName == $question['userName']) {
+					$question['userName'] = "you";
+			
 				}
 				//echo $question["ques_Id"];	
-			$phpdate = strtotime( $question['post'] );
-			$mysqldate = date( 'j  F, Y @ g:i a', $phpdate );	
-			echo '	
-			<form method="GET" action="'.$_SERVER["PHP_SELF"].'">
+				$phpdate = strtotime($question['post']);
+				$mysqldate = date('j  F, Y @ g:i a', $phpdate);
+				$questionId  =$question['ques_Id'];
+				$check = new CheckFields();
+				$answerExist = $check->check("SELECT * FROM `answer` where `ques_id`='$questionId' and `userName`='$userName'");
+				
+				if ($answerExist > 0) {
+
+				echo '	<script>
+					$(document).ready(function() {
+					$("questionButton").addClass("d-none");
+					});
+					
+					</script>';
+				}
+				echo '	
+			<form method="GET" action="' . $_SERVER["PHP_SELF"] . '">
       			 <div class="d-flex  question-lists my-3">
      			<div class="conatiner image m-2">
-       			 <img  src="data:image/png;base64,'.base64_encode($question["userImage"]).'"  alt="">
+       			 <img  src="data:image/png;base64,' . base64_encode($question["userImage"]) . '"  alt="">
      			 </div>
       			<div class="container question">
-      			 <h3>'.$question['question'].'</h3>
+      			 <h3>' . $question['question'] . '</h3>
        			<div class="d-flex justify-content-between">
-         		 <p>by '.$question["userName"].' on '.$mysqldate.'</p>
+         		 <p>by ' . $question["userName"] . ' on ' . $mysqldate . '</p>
 			  <div class="edit-btn d-flex justify-content-between">
-			  <p><button type="submit"  name="answer-click" value="'.$question['ques_Id'].'" class="btn  my-3 btn-primary">View</button></p>
-			  <p><button type="submit"  name="question-click" value="'.$question['ques_Id'].'" class="btn my-3  btn-success">Answer</button></p>
+			  <p><button type="submit"  name="answer-click" value="' . $question['ques_Id'] . '" class="btn  my-3 btn-primary">View</button></p>
+			  <p><button type="submit" id="questionButton"  name="question-click" value="' . $question['ques_Id'] . '" class="btn my-3  btn-success">Answer</button></p>
 			</div>
         		</div>
       			</div>
     			</div>
 			</form>
-			
+		
 			';
 			}
-
 		}
-			?>
+		?>
 
 		<div class="btn-group me-2" role="group" aria-label="Second group">
-		<button type="text"  class="btn btn-secondary">page no.</button>
+			<button type="text" class="btn btn-secondary">page no.</button>
 			<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-			
+
 				<?php
-				 
-					//Displaying numbers of pages
-					for ($i = 0; $i < $pageNumber; $i++) {
-			echo '<button type="submit" name="pagebutton" id="pgBtn" value="' . $i . '"  class="btn btn-secondary">'.$i.'</button>';
-					} ?>
+
+				//Displaying numbers of pages
+				for ($i = 0; $i < $pageNumber; $i++) {
+					echo '<button type="submit" name="pagebutton" id="pgBtn" value="' . $i . '"  class="btn btn-secondary">' . $i . '</button>';
+				} ?>
 			</form>
 		</div>
 	</div>

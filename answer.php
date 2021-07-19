@@ -133,9 +133,26 @@ if(isset($_POST['answer'])){
 				$answerId=$aSet['ans_id'];
 				//Counting likes and dislikes
 				$count=new CheckFields();
-				$likes=$count->check("select * from `likes` where `ans_id`='$answerId'");
-				$dislikes=$count->check("select * from `dislikes` where `ans_id`='$answerId'");		
-
+				$likes=$count->check("select * from `likes` where `ans_id`='$answerId' ");
+				$dislikes=$count->check("select * from `dislikes` where `ans_id`='$answerId'");	
+				$dislike=$count->check("select * from `dislikes` where `ans_id`='$answerId' and `dislike_userName`='$userName'");
+				$like=$count->check("select * from `likes` where `ans_id`='$answerId' and `liked_userName`='$userName'");
+				if($like==1){
+					echo '<script>
+					$(document).ready(function() {
+					$("#like_btn").addClass("btn-danger");
+					$("#like_btn").removeClass(" btn-outline-danger");		
+				         });
+					</script>';
+				}
+				if($dislike==1){
+					echo '<script>
+					$(document).ready(function() {
+					$("#dislike_btn").addClass("btn-danger");
+					$("#dislike_btn").removeClass(" btn-outline-danger");			
+				        });
+					</script>';
+				}
 			echo '
 			
 			<div class="user-container">
@@ -153,20 +170,22 @@ if(isset($_POST['answer'])){
 			</div>
 			        
 				<button type="button" class="btn  btn-outline-danger" id="like_btn" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
-				<button type="button" class="btn  btn-outline-danger" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
-				<button class="btn btn-primary" id="Comment" onclick="showComment(\'retriveComment\'.\''.$aSet['ans_id'].'\')">Comment</button>
+				<button type="button" class="btn  btn-outline-danger" id="dislike_btn" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
+				<button class="btn btn-primary" id="Comment" onclick="showComment(\'retriveComment\',\''.$aSet['ans_id'].'\')">Comment</button>
 			</div> 
+			<p class="text-center d-none my-3" style="color:red;" id="error" ></p>
 			<div class="container d-none rounded comment" id="commentDiv">
 				<div class="" style="display: flex;">
 				<textarea type="text" name="question" style="margin-top: 0px; margin-bottom: 0px; height: 40px !important;border-radius: 30px!important;" class="form-control"
 					 placeholder="Write your comment here. Limit 120 Characters"
 					aria-label="Username" id="commentText" aria-describedby="addon-wrapping"></textarea>
+					
 				<button class="btn btn-primary" style="margin-left: 5px !important;"  onclick="comment(\'comment\',\''.$aSet["ans_id"].'\',\''.$userName.'\')">comment</button>
 			        </div>
 			</div>
 		
 			<div>
-			<div class="container commentdiv " style="margin:0;" >
+			<div class="container commentdiv" id="commentPost" style="margin:0;" >
 			<div class="user-container">
 				<img class="profile-pic lol user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
 				<p class="user-college" style="color:#5A79A5;font-weight:bold;"><a href="like">like</a> (12) <a href="">dislike</a> (1) <a href="">reply</a></p>
@@ -197,17 +216,19 @@ if(isset($_POST['answer'])){
 							$('#'+like_id).html(result[0]);
 							$('#'+dislike_id).html(result[1]);
 
-							if(typeof result[2] === 'undefined') {
+							if(typeof result[2] !== 'undefined') {
+								$('#like_btn').removeClass('btn-outline-danger');
 								$('#like_btn').addClass('btn-danger');
-								$('#like_btn').addClass('btn-danger');
-								console.log("hrry");
+								
 									}
-							// else{
-							// 	$('#'+like_id).removeClass('btn-danger');
-							// }		
-							// if ($( '#'+dislike_id).hasClass('btn-danger')){
-							// 	$('#'+dislike_id).removeClass('btn-danger')
-							// }
+							 else{
+								$('#like_btn').addClass('btn-outline-danger');
+								$('#like_btn').removeClass('btn-danger');
+							 }		
+							 if ($( '#dislike_btn').hasClass('btn-danger')){
+							 	$('#dislike_btn').removeClass('btn-danger');
+								 $('#dislike_btn').addClass('btn-outline-danger');
+							 }
 						}
 					})
 					
@@ -227,6 +248,20 @@ if(isset($_POST['answer'])){
 							$('#'+like_id).html(result[1]);
 							$('#'+dislike_id).html(result[0]);
 
+							if(typeof result[2] !== 'undefined') {
+								$('#dislike_btn').removeClass('btn-outline-danger');
+								$('#dislike_btn').addClass('btn-danger');
+								
+									}
+							 else{
+								$('#dislike_btn').addClass('btn-outline-danger');
+								$('#dislike_btn').removeClass('btn-danger');
+							 }
+							 if ($( '#like_btn').hasClass('btn-danger')){
+							 	$('#like_btn').removeClass('btn-danger');
+								 $('#like_btn').addClass('btn-outline-danger');
+							 }
+							 
 						}
 					})
 				}
@@ -258,17 +293,23 @@ if(isset($_POST['answer'])){
 					console.log("Comment set");
 					var commentText = $('#commentText').val();
 					console.log(commentText);
+					if(commentText==""){
+						$('#error').removeClass('d-none');
+						$('#error').text("comment box is empty");
+					}
+					else{
+						$('#error').addClass('d-none');
 					//document.getElementById("commentText").value=null;
 					$.ajax({
 						url: 'ajax/comment.php',
 						type: 'post',
 						data: 'lol=like,&type=' + type +'&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText,
 						success: function (result) {
-							$('#commentText').val('');
+							$('#commentPost').html(result);
 							
 						}
 					})
-					 
+				}
 				}
 				function showText(type, ans_id) {
 					console.log("text show karega");
