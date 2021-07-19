@@ -13,6 +13,8 @@ $getData=new Users();
 
 if($type=="comment")
 {
+ $count=new CheckFields();
+ $commentsNumber=$count->check("SELECT * FROM `comments` where `ans_id`=$answerId");	
  $submit= new InsertData();
  $result=$submit->query("INSERT INTO `comments` (`c_Id`, `ans_Id`, `userName`, `comment`) VALUES (NULL, '$answerId', '$userName', '$comment')");
  $retriveFields=$getData->getTheData("SELECT u.userImage,c.c_id,c.comment,c.dateTime,c.userName,c.dateTime from comments c join users_info u on u.userName=c.userName where c.ans_id='$answerId' order by c.dateTime desc limit 1");	
@@ -24,9 +26,9 @@ if($type=="comment")
 	    <p class="user-college" style="color:#5A79A5;font-weight:bold;"><a href="like">like</a> (12) <a href="">dislike</a> (1) <a href="">reply</a></p>
 	    <p class="user-name"><strong>'.$fields["userName"].'</strong></p>
 	    <p class="user-date" style="color:#5A79A5;font-weight:bold;">'.$mysqldate.'</p>
-	    
    	     </div>
-   	    <pre class="my-3 pre">'.$fields['comment'].'</pre>';
+   	    <pre class="my-3 pre">'.$fields['comment'].'</pre>
+	   <a><p class="text-center" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);">Load More Comments('.$commentsNumber.')</p></a>';
  }
 }
 	

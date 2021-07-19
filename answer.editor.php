@@ -4,6 +4,7 @@ include 'include/db.connect.php';
 include 'include/Validation.php';
 $questionId=$_SESSION['questionId'];
 
+
 //Getting all the value from the questions table
 $questionsTable=new Users();
 $questionRecords=$questionsTable->getTheData("SELECT * from questions where ques_id=$questionId");
