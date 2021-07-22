@@ -60,7 +60,7 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 		crossorigin="anonymous">
 	<link rel="stylesheet" href="css/questions.css">
 	<link rel="stylesheet" href="css/navbar.css">
-	<link rel="script" href="script/jquery.js">
+	<script src="script/jquery.js" type="text/javascript"></script>
 	<title>Questions</title>
 </head>
 
@@ -106,16 +106,7 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 				$questionId  =$question['ques_Id'];
 				$check = new CheckFields();
 				$answerExist = $check->check("SELECT * FROM `answer` where `ques_id`='$questionId' and `userName`='$userName'");
-				
-				if ($answerExist > 0) {
-
-				echo '	<script>
-					$(document).ready(function() {
-					$("questionButton").addClass("d-none");
-					});
-					
-					</script>';
-				}
+				$answereddAny=$check->check("SELECT * From `answer` where `ques_id`=$questionId");
 				echo '	
 			<form method="GET" action="' . $_SERVER["PHP_SELF"] . '">
       			 <div class="d-flex  question-lists my-3">
@@ -127,8 +118,8 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
        			<div class="d-flex justify-content-between">
          		 <p>by ' . $question["userName"] . ' on ' . $mysqldate . '</p>
 			  <div class="edit-btn d-flex justify-content-between">
-			  <p><button type="submit"  name="answer-click" value="' . $question['ques_Id'] . '" class="btn  my-3 btn-primary">View</button></p>
-			  <p><button type="submit" id="questionButton"  name="question-click" value="' . $question['ques_Id'] . '" class="btn my-3  btn-success">Answer</button></p>
+			  <p><button type="submit"  id="view'.$questionId.'" name="answer-click" value="' . $question['ques_Id'] . '" class="btn  my-3 btn-primary">View</button></p>
+			  <p><button type="submit" id="questionButton'.$questionId.'"  name="question-click" value="' . $question['ques_Id'] . '" class="btn my-3  btn-success">Answer</button></p>
 			</div>
         		</div>
       			</div>
@@ -136,6 +127,22 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 			</form>
 		
 			';
+			if ($answerExist == 1) {
+
+				echo '
+					<script>
+					var element = document.getElementById("questionButton'.$questionId.'");
+					element.disabled = true;
+					</script>';
+				}
+			if($answereddAny==0){
+				echo 
+				'	<script>
+					var element = document.getElementById("view'.$questionId.'");
+					element.disabled = true;
+					</script>
+				';
+			}
 			}
 		}
 		?>

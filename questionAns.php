@@ -11,7 +11,7 @@ require 'include/Validation.php';
 require 'include/pagination.php';
 $userName = $_SESSION['userName'];
 
- $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='krish123' order by q.post desc",10,0);
+ $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='$userName' order by q.post desc",10,0);
  $questionSet=$data->get();
  $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
  
@@ -22,7 +22,7 @@ $userName = $_SESSION['userName'];
  // //Setting the limit and offset to retrive required data
   $offset=$value*10;
 
-  $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='krish123' order by q.post desc",10,$offset);
+  $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='$userName' order by q.post desc",10,$offset);
   $questionSet=$data->get();
   $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
   }

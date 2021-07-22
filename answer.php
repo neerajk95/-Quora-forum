@@ -13,7 +13,7 @@ $sql="SELECT answer.ansImg,answer.ans_id,users_info.userName as aUserName,users_
 $answerSet=new Users();
 $answerCount=$answerSet->getTheData("SELECT * FROM `answer` where `ques_id`=$questionId");
 $data = new Pagination($sql,2,0);
- $dataSet = $data->get(0);
+ $dataSet = $data->get();
  $pageNumber = $data->pageNumber("SELECT * FROM `answer` where `ques_id`=$questionId");
 
  
@@ -113,15 +113,13 @@ if(isset($_POST['answer'])){
 		<div class="container post-answer my-4">
 			<?php 
 
-		foreach($dataSet as $aSet)
+		foreach($dataSet as $aSet){
 				if(empty($aSet)){
 					echo '<p style="color:red";font-weight:bold;>No one Answered</p>';
 				}
 				$phpdate = strtotime( $aSet['DT'] );
 				$mysqldate = date( 'j  F, Y @ g:i a', $phpdate );	
-				if($aSet['ansImg']==Null){
-					$displayImage="d-none";
-				}	
+				
 
 				$string = $aSet['answer'];
 				if (strlen($string) > 1000) {
@@ -140,16 +138,16 @@ if(isset($_POST['answer'])){
 				if($like==1){
 					echo '<script>
 					$(document).ready(function() {
-					$("#like_btn").addClass("btn-danger");
-					$("#like_btn").removeClass(" btn-outline-danger");		
+					$("#like_btn'.$answerId.'").addClass("btn-danger");
+					$("#like_btn'.$answerId.'").removeClass(" btn-outline-danger");		
 				         });
 					</script>';
 				}
 				if($dislike==1){
 					echo '<script>
 					$(document).ready(function() {
-					$("#dislike_btn").addClass("btn-danger");
-					$("#dislike_btn").removeClass(" btn-outline-danger");			
+					$("#dislike_btn'.$answerId.'").addClass("btn-danger");
+					$("#dislike_btn'.$answerId.'").removeClass(" btn-outline-danger");			
 				        });
 					</script>';
 				}
@@ -165,47 +163,52 @@ if(isset($_POST['answer'])){
 			</div>
 			<div class="user-post my-4"> 
 			
-			<p class="show-read-more"  id="textShow">'.nl2br($string).'</p>
+			<p class="show-read-more"  id="textShow'.$answerId.'">'.nl2br($string).'</p>
 			
-		        <div class="'.$displayImage .'">
+		        <div id="image-show'.$answerId.'" class="">
 			<img src="data:image/png;base64,'.base64_encode($aSet['ansImg']).'"  class="squareImage my-2" alt="">
 			</div>
 			        
-				<button type="button" class="btn  btn-outline-danger" id="like_btn" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
-				<button type="button" class="btn  btn-outline-danger" id="dislike_btn" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
+				<button type="button" class="btn  btn-outline-danger" id="like_btn_'.$aSet['ans_id'].'" onclick="like_update(\'like\',\'like_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )"> like (<span id="like_'.$aSet['ans_id'].'">'.$likes.'</span>) </button>
+				<button type="button" class="btn  btn-outline-danger" id="dislike_btn_'.$aSet['ans_id'].'" onclick="dislike_update(\'dislike\',\'dislike_'.$aSet["ans_id"].'\',\''.$aSet["ans_id"].'\',\''.$questionId.'\',\''.$userName.'\' )">dislike (<span id="dislike_'.$aSet['ans_id'].'">'.$dislikes.'</span>) </button>
 				<button class="btn btn-primary" id="Comment" onclick="showComment(\'retriveComment\',\''.$aSet['ans_id'].'\')">Comment</button>
 			</div> 
 			<p class="text-center d-none my-3" style="color:red;" id="error" ></p>
 			<div class="container d-none rounded comment" id="commentDiv">
 				<div class="" style="display: flex;">
 				<textarea type="text" name="question" style="margin-top: 0px; margin-bottom: 0px; height: 40px !important;border-radius: 30px!important;" class="form-control"
-					 placeholder="Write your comment here. Limit 120 Characters"
+					 placeholder="Write your comment here."
 					aria-label="Username" id="commentText" aria-describedby="addon-wrapping"></textarea>
 					
 				<button class="btn btn-primary" style="margin-left: 5px !important;"  onclick="comment(\'comment\',\''.$aSet["ans_id"].'\',\''.$userName.'\')">comment</button>
 			        </div>
 			</div>
-		
-			<div>
-			<div class="container commentdiv" id="commentPost" style="margin:0;" >
-			<div class="user-container">
-				<img class="profile-pic lol user_img"  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($aSet["userImage"]).'" alt="">
-				<p class="user-college" style="color:#5A79A5;font-weight:bold;"><a href="like">like</a> (12) <a href="">dislike</a> (1) <a href="">reply</a></p>
-				<p class="user-name"><strong>'.$aSet["aUserName"].'</strong></p>
-				<p class="user-date" style="color:#5A79A5;font-weight:bold;">12 jan 2019 @ 12:20</p>
+				<a><p class="text-center d-none" id="loadcomment" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);" onclick="loadcomment(\''.$aSet["ans_id"].'\')">Load Comment</p></a>
 				
-			</div>
-			<pre class="my-3 pre">so rambunctious that his mother q.</pre>
+			<div>
+			<div class="container d-none commentdiv" id="commentPost" style="margin:0;" >
+			
 		      	</div>
-			      <a><p class="text-center" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);">Load More Comments('.$commentsNumber.')</p></a>		
+			      <a><p class="text-center d-none" id="load-more-comment" style="text-decoration:underline;cursor:pointer;color:rgb(52, 124, 219);" onclick="loadcomment(\''.$aSet["ans_id"].'\')">Load More Comments('.$commentsNumber.')</p></a>		
 		       <hr>';
-
+			
+		       if($aSet['ansImg']==Null){
+			echo '<script>
+			console.log("hello");
+			$("#image-show'.$answerId.'").addClass("d-none");</script>';
+		       }
+		}
+			
 ?>
 			<script>
 				//Function for like
 				function like_update(type, like_id, ans_id, ques_id, userName) {
 					var str = like_id.substring(4);
 					var dislike_id="dislike".concat(str);
+					var like_btn="like_btn".concat(str);
+					var dislike_btn="dislike_btn".concat(str);
+					console.log(like_btn);
+					console.log(dislike_btn);
 					console.log(dislike_id);
 					$.ajax({
 						url: 'ajax/likes.php',
@@ -220,17 +223,17 @@ if(isset($_POST['answer'])){
 							$('#'+dislike_id).html(result[1]);
 
 							if(typeof result[2] !== 'undefined') {
-								$('#like_btn').removeClass('btn-outline-danger');
-								$('#like_btn').addClass('btn-danger');
+								$('#'+like_btn).removeClass('btn-outline-danger');
+								$('#'+like_btn).addClass('btn-danger');
 								
 									}
 							 else{
-								$('#like_btn').addClass('btn-outline-danger');
-								$('#like_btn').removeClass('btn-danger');
+								$('#'+like_btn).addClass('btn-outline-danger');
+								$('#'+like_btn).removeClass('btn-danger');
 							 }		
-							 if ($( '#dislike_btn').hasClass('btn-danger')){
-							 	$('#dislike_btn').removeClass('btn-danger');
-								 $('#dislike_btn').addClass('btn-outline-danger');
+							 if ($( '#'+dislike_btn).hasClass('btn-danger')){
+							 	$('#'+dislike_btn).removeClass('btn-danger');
+								 $('#'+dislike_btn).addClass('btn-outline-danger');
 							 }
 						}
 					})
@@ -240,7 +243,9 @@ if(isset($_POST['answer'])){
 				function dislike_update(type, like_id, ans_id, ques_id, userName) {
 					var str = like_id.substring(7);
 					var dislike_id="like".concat(str);
-					console.log(dislike_id);
+					var dislike_btn="dislike_btn_".concat(dislike_id);
+					var like_btn="like_btn_".concat(dislike_id);
+					console.log("hbdfth"+dislike_id);
 					console.log("Set ho gya mai dusri barr bhi");
 					$.ajax({
 						url: 'ajax/likes.php',
@@ -252,17 +257,17 @@ if(isset($_POST['answer'])){
 							$('#'+dislike_id).html(result[0]);
 
 							if(typeof result[2] !== 'undefined') {
-								$('#dislike_btn').removeClass('btn-outline-danger');
-								$('#dislike_btn').addClass('btn-danger');
+								$('#'+dislike_btn).removeClass('btn-outline-danger');
+								$('#'+dislike_btn).addClass('btn-danger');
 								
 									}
 							 else{
-								$('#dislike_btn').addClass('btn-outline-danger');
-								$('#dislike_btn').removeClass('btn-danger');
+								$('#'+dislike_btn).addClass('btn-outline-danger');
+								$('#'+dislike_btn).removeClass('btn-danger');
 							 }
-							 if ($( '#like_btn').hasClass('btn-danger')){
-							 	$('#like_btn').removeClass('btn-danger');
-								 $('#like_btn').addClass('btn-outline-danger');
+							 if ($( '#'+like_btn).hasClass('btn-danger')){
+							 	$('#'+like_btn).removeClass('btn-danger');
+								 $('#'+like_btn).addClass('btn-outline-danger');
 							 }
 							 
 						}
@@ -275,24 +280,21 @@ if(isset($_POST['answer'])){
 					console.log("set ho gaya bhai");
 					if ($("#commentDiv").hasClass("d-none")) {
 						$(".comment").removeClass("d-none");
+						$("#loadcomment").removeClass("d-none");
 					} else {
 						$(".comment").addClass("d-none");
-						
+						$("#loadcomment").addClass("d-none");	
+						$('#load-more-comment').addClass('d-none');
+						$('#commentPost').remove();
 					}
-				
-					//document.getElementById("commentText").value=null;
-					$.ajax({
-						url: 'ajax/comment.php',
-						type: 'post',
-						data: 'lol=like,&type=' + type +'&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText,
-						success: function (result) {
-							$('#commentText').val('');
-							
-						}
-					})
+					$('#commentText').val('');
+					
 			}
 
 				function comment(type,ans_id, userName) {
+					$('#loadcomment').addClass('d-none');
+					$('#commentPost').removeClass('d-none');
+					$('#load-more-comment').removeClass('d-none');
 					console.log("Comment set");
 					var commentText = $('#commentText').val();
 					console.log(commentText);
@@ -308,6 +310,7 @@ if(isset($_POST['answer'])){
 						type: 'post',
 						data: 'lol=like,&type=' + type +'&ans_id=' + ans_id + '&userName=' + userName+'&commentText='+commentText,
 						success: function (result) {
+							
 							$('#commentPost').html(result);
 							
 						}
@@ -316,19 +319,43 @@ if(isset($_POST['answer'])){
 				}
 				function showText(type, ans_id) {
 					console.log("text show karega");
+					var textShow="textShow".concat(ans_id);
+					console.log(textShow);
 					//document.getElementById("commentText").value=null;
 					$.ajax({
 						url: 'ajax/textShow.php',
 						type: 'post',
 						data: 'lol=like,&ans_id=' + ans_id + '&type=' + type,
 						success: function (result) {
-							document.getElementById('textShow').value = '';
-							$('#textShow').empty();
-							 $("#textShow").append(result);
+			
+							console.log(result);
+							$('#'+textShow).empty();
+							 $('#'+textShow).append(result);
 						}
 					})
 					 
 				}
+
+				//loading comment
+			  function loadcomment(ans_id){
+				  console.log("one thik");
+				var count=$('div[id^=commentPost]').length
+				var limit =count*2;
+				
+				console.log(limit);
+				$('#loadcomment').addClass('d-none');
+				$('#load-more-comment').removeClass('d-none');
+				$('#commentPost').removeClass('d-none');
+				$.ajax({
+						url: 'ajax/loadComment.php',
+						type: 'post',
+						data: 'lol=like,&ans_id=' + ans_id+'&limit='+limit,
+						success: function (result) {
+						$('#commentPost').html(result);
+						}
+					})
+			  }
+			  $('#loadcomment').removeClass('d-none');
 				
 			</script>
 

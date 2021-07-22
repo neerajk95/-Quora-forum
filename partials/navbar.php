@@ -14,6 +14,13 @@ if(isset($_SESSION['userName']) && $_SESSION['login']=true){
         $firstName= $user['firstName'];//userName
         }
      }
+     if(isset($_POST['search'])){
+    echo "hello";
+    $text=$_POST['searchText'];
+    $_SESSION['searchText']=$text;
+    header("location:search.php");
+
+     }
 echo
     '<div class="head">
         <ul class="ul-list">
@@ -21,10 +28,15 @@ echo
             <li class="nav-items home" ><a id="home" href="Quora.php">Home </a></li>
             <li class="nav-items answer" ><a id="question" href="questions.php">Questions</a></li>
             <li class="nav-items notification" ><a  id="notification" href="">Notification</a></li>
-            <form class="d-flex">
-                <input class="form-control search-bar me-2" type="search" placeholder="Search" aria-label="Search">
-               
-            </form>
+          
+            <form  method="post" action="' . $_SERVER["PHP_SELF"] . '">
+        <div class="d-flex">
+        <input class="form-control me-2" name="searchText" type="search" placeholder="Search Questions" aria-label="Search">
+        <button class="btn btn-outline-success" name="search" type="submit">Search</button>
+        </div>
+      </form>
+
+
             <script>
             var currentURL = window.location.href;
             console.log(currentURL);
