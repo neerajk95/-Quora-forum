@@ -11,7 +11,7 @@ require 'include/Validation.php';
 require 'include/pagination.php';
 $userName = $_SESSION['userName'];
 
- $data=new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName='$userName' and users_info.userName='$userName' order by questions.post Desc",10,0);
+ $data=new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName='$userName' and users_info.userName='$userName' order by questions.post Desc",5,0);
  $questionSet=$data->get();
  $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
  
@@ -20,9 +20,9 @@ $userName = $_SESSION['userName'];
   $value = htmlspecialchars($_REQUEST['pagebutton']);
 
  // //Setting the limit and offset to retrive required data
-  $offset=$value*10;
+  $offset=$value*5;
 
-  $data=new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName='$userName' and users_info.userName='$userName' order by questions.post Desc",10,$offset);
+  $data=new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName='$userName' and users_info.userName='$userName' order by questions.post Desc",5,$offset);
   $questionSet=$data->get();
   $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
   }

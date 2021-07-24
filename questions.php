@@ -13,7 +13,7 @@ $userName = $_SESSION['userName'];
 
 
 // //Default code for pagination
-$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, 0);
+$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 5, 0);
 $questionSet = $data->get(0);
 $pageNumber = $data->pageNumber("SELECT * FROM `questions`");
 
@@ -21,9 +21,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])) {
 	$value = htmlspecialchars($_REQUEST['pagebutton']);
 
 	// //Setting the limit and offset to retrive required data
-	$offset = $value * 6;
+	$offset = $value * 5;
 
-	$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 6, $offset);
+	$data = new Pagination("SELECT  questions.ques_Id,questions.question,questions.post,questions.userName,users_info.userImage from  questions JOIN users_info on questions.userName=users_info.userName order by questions.post Desc", 5, $offset);
 	$questionSet = $data->get();
 	$pageNumber = $data->pageNumber("SELECT * FROM `questions`");
 }
@@ -118,14 +118,14 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
        			<div class="d-flex justify-content-between">
          		 <p>by ' . $question["userName"] . ' on ' . $mysqldate . '</p>
 			  <div class="edit-btn d-flex justify-content-between">
-			  <p><button type="submit"  id="view'.$questionId.'" name="answer-click" value="' . $question['ques_Id'] . '" class="btn  my-3 btn-primary">View</button></p>
-			  <p><button type="submit" id="questionButton'.$questionId.'"  name="question-click" value="' . $question['ques_Id'] . '" class="btn my-3  btn-success">Answer</button></p>
+			  <span id="span'.$questionId.'"><p><button type="submit"  id="view'.$questionId.'" name="answer-click" value="' . $question['ques_Id'] . '" class="btn  my-3 btn-primary">View</button></p></span>
+			 <span id="span'.$questionId.'"> <p><button type="submit" id="questionButton'.$questionId.'"  name="question-click" value="' . $question['ques_Id'] . '" class="btn my-3  btn-success">Answer</button></p></span>
 			</div>
         		</div>
       			</div>
     			</div>
 			</form>
-		
+				
 			';
 			if ($answerExist == 1) {
 
@@ -133,20 +133,27 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 					<script>
 					var element = document.getElementById("questionButton'.$questionId.'");
 					element.disabled = true;
-					</script>';
-				}
+					$("span'.$questionId.'").click(function(){
+  					 alert("You Already Answered");
+ 					});
+					 </script>';
+			        }
 			if($answereddAny==0){
 				echo 
 				'	<script>
 					var element = document.getElementById("view'.$questionId.'");
 					element.disabled = true;
+					$("span'.$questionId.'").click(function(){
+  					 alert("No one answered this question");
+ 					});
 					</script>
 				';
 			}
 			}
 		}
+		
 		?>
-
+		
 		<div class="btn-group me-2" role="group" aria-label="Second group">
 			<button type="text" class="btn btn-secondary">page no.</button>
 			<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">

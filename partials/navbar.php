@@ -27,7 +27,7 @@ echo
         <li class="none"> <a href="Quora.php"> <img src="icon/conversation.png" alt=""></a></li>
             <li class="nav-items home" ><a id="home" href="Quora.php">Home </a></li>
             <li class="nav-items answer" ><a id="question" href="questions.php">Questions</a></li>
-            <li class="nav-items notification" ><a  id="notification" href="">Notification</a></li>
+           
           
             <form  method="post" action="' . $_SERVER["PHP_SELF"] . '">
         <div class="d-flex">
@@ -45,7 +45,7 @@ echo
                 element.style.backgroundColor = "#ff3333" ; 
                 element.style.color = "white" ; 
             }
-            if(currentURL=="http://localhost/quora/questions.php"){
+            if(currentURL=="http://localhost/quora/questions.php" || currentURL=="http://localhost/quora/questionAsked.php" || currentURL=="http://localhost/quora/questionAns.php"){
                 var element = document.getElementById("question");
                 element.style.backgroundColor = "#ff3333" ; 
                 element.style.color = "white" ; 
@@ -64,7 +64,7 @@ echo
         <li><div class="dropdown">
           <img class="profile-pic "  data-toggle="dropdown"  src="data:image/png;base64,'.base64_encode($userImage).'" alt="">
            <div class="dropdown-content">
-            <a href="#">View Profile</a>
+            <a href="../quora/profile.php">View Profile</a>
                <a href="logout.php">Logout</a>
              </div>
              </div></li>
