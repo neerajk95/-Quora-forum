@@ -4,47 +4,76 @@ include 'include/db.connect.php';
 include 'include/Validation.php';
 
 //Reteriving the data for answer
-$ans_id=$_SESSION['answer_id'];
+$ans_id = $_SESSION['answer_id'];
 
-	$getTheAnswer=new Users();
-	$answer=$getTheAnswer->getTheData("select `answer` from `answer` where `ans_id`='$ans_id'");
-	foreach($answer as $answer){
-		$editAns=$answer['answer'];
-	}
-	
-$questionId=$_SESSION['question_id'];
+$getTheAnswer = new Users();
+$answer = $getTheAnswer->getTheData("select * from `answer` where `ans_id`='$ans_id'");
+foreach ($answer as $answer) {
+	$editAns = $answer['answer'];
+	$ansImg = $answer['ansImg'];
+}
+
+
+
+
+$questionId = $_SESSION['questionId'];
+$userName = $_SESSION['userName'];
 
 //Getting all the value from the questions table
-$questionsTable=new Users();
-$questionRecords=$questionsTable->getTheData("SELECT * from questions where ques_id=$questionId");
+$questionsTable = new Users();
+$questionRecords = $questionsTable->getTheData("SELECT * from questions where ques_id=$questionId");
 
-foreach($questionRecords as $ques){
- $qUserName=$ques["userName"];
- $qQuestion=$ques["question"];
+foreach ($questionRecords as $ques) {
+	$qUserName = $ques["userName"];
+	$qQuestion = $ques["question"];
 }
-$answerUserName= $_SESSION["userName"];
+$answerUserName = $_SESSION["userName"];
 
 //Saving the data
 if (($_SERVER["REQUEST_METHOD"] == "POST")) {
- $text=$_POST['answerText'];
+	$text = $_POST['answerText'];
+	$answerUserName = $_SESSION["userName"];
 
-//Getting all things done
-//$fileName=$_FILES[$file]['name'];
-	
+	//Escaping from the special characters
+	$us = new realEscape;
+	$atext = $us->realString($text);
+	$validation = new AnswerEditor($_POST);
 
-//Escaping from the special characters
-$us=new realEscape;
-$atext=$us->realString($text);
-$validation=new AnswerEditor($_POST);
-$errors=$validation->validateForm();
 
- if($errors==NULL){
-	$answer=new InsertData();
- 	$answerInsert=$answer->query("UPDATE `answer` SET `answer` = '$text' WHERE `answer`.`ans_id` = $ans_id;");
-	$_SESSION['ques_id']=$questionId;
-	 header("location:answer.php");
- 	}
+	if (!empty($_FILES["image"]["name"])) {
+
+		// Get file info 
+		$fileName = basename($_FILES["image"]["name"]);
+		$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+
+		// Allow certain file formats 
+		$allowTypes = array('jpg', 'png', 'jpeg');
+		if (in_array($fileType, $allowTypes)) {
+			$image = $_FILES['image']['tmp_name'];
+			$imgContent = addslashes(file_get_contents($image));
+		} else {
+			$validation->addError("type", "Accept only jpg png jpeg formats only");
+		}
+	}
+
+	if (!isset($imgContent)) {
+		
+	}
+
+	$errors = $validation->validateForm();
+
+	if ($errors == NULL) {
+
+		$answer = new InsertData();
+		$answerInsert = $answer->query("UPDATE `answer` SET `answer` = '$atext', `ansImg` = '$imgContent' WHERE `answer`.`ans_id` =$ans_id;");
+		if (!$answerInsert) {
+			echo "Sefsefsefsefsefsefsef";
+		}
+		$_SESSION['ques_id'] = $questionId;
+		header("location:answer.php");
+	}
 }
+
 ?>
 
 
@@ -67,28 +96,19 @@ $errors=$validation->validateForm();
 	<link rel="stylesheet" href="css/navbar.css">
 	<link rel="stylesheet" href="css/answer.editor.css">
 	<script src="script/answer.editor.js"></script>
+	<script src="script/jquery.js" type="text/javascript"></script>
+
 
 </head>
 
-<body onload="myFunction()">
-	<?php include 'partials/navbar.php'?>
+<body>
+	<?php include 'partials/navbar.php' ?>
 
-	<!-- Optional JavaScript; choose one of the two! -->
 
-	<!-- Option 1: Bootstrap Bundle with Popper -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-		crossorigin="anonymous"></script>
-
-	<!-- Option 2: Separate Popper and Bootstrap JS -->
-	<!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
 	<section class="editor-head">
-		<h1 class="shadow-sm"><span style="color:#cFF8585"><?php echo $qQuestion;?></span><span
+		<h1 class="shadow-sm"><span style="color:#FF8585"><?php echo $qQuestion; ?></span><span
 				style="color:black"> Asked by</span> <span
-				style="color: #669999"><?php echo $qUserName;?></span></h1>
+				style="color: #669999"><?php echo $qUserName; ?></span></h1>
 		<div class="flex-box">
 			<div class="row">
 				<div class="col">
@@ -136,12 +156,27 @@ $errors=$validation->validateForm();
 			</div>
 		</div>
 		<br>
+		<?php
+		if ($ansImg == null) {
+			echo '
+	<script>
+	$(document).ready(function() {
+	$("#imageBox").addClass("d-none");
+	$("#imageUrl").removeClass("d-none");
+	});
+	</script>
+	';
+		}
+		?>
+
+
 		<div class="row">
 			<div class="col-md-3 col-sm-3">
 			</div>
 			<div class="col-md-6 col-sm-9">
 				<h4 class="text-center ">Write your answer here. Limit 1800 characters</h4>
-				<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+				<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>"
+					enctype="multipart/form-data">
 					<div class=" flex-box">
 						<textarea id="textarea1" class="input shadow" name="answerText"
 							rows="15" cols="100" placeholder="Your text here "><?php echo $editAns; ?>
@@ -151,28 +186,35 @@ $errors=$validation->validateForm();
 					<div class="error my-2 text-center">
 						<?php echo $errors['answerText'] ?? ''; ?>
 					</div>
-					<div class="image show my-4" style="margin-left:auto; margin-right:auto;">
-						<img src="img/python.jpg"  height=200 width=200 alt="img/userdefault.jpg">
-						<button type="submit" class="btn btn-danger">remove</button>
+					<div class="my-4 image show" id="imageBox" style="margin-left:230px!important;">
+						<img class=" my-4 "
+							src=" data:image/png;base64,<?php echo base64_encode($ansImg); ?>"
+							height=200 width=200 alt="img/userdefault.jpg">
+						<button type="button" id="<?php echo $ans_id; ?>" name="delete"
+							class="btn my-3 btn-danger delete">Remove</button>
 					</div>
-					<div class="form-group " style="display: none; margin-left:auto !important; margin-right:auto !important;">
+
+
+					<div class="form-group d-none " id="imageUrl"
+						style=" margin-left:auto !important; margin-right:auto !important;">
 						<div class="image-upload my-4 text-center">
 							<label class="form-label" for="customFile">Upload Image</label>
-							<input type="file" class="form-control" name="uploadfile"
+							<input type="file" class="form-control" name="image"
 								accept="image/x-png,image/gif,image/jpeg"
 								id="customFile" />
 
 						</div>
 					</div>
+
+
 					<div class="error my-2 text-center">
-						<?php echo $errors['fileExt'] ?? ''; ?>
-					</div>
-					<div class="error my-2 text-center">
-						<?php echo $errors['fileSize'] ?? ''; ?>
+						<?php echo $errors['type'] ?? ''; ?>
 					</div>
 					<div class="d-flex justify-content-around">
-					<button class="btn sub-btn btn-success my-4 " type="submit">update</button>
-				<a href="questionAns.php"<button class="btn sub-btn btn-danger my-4 " type="button">cancel</button></a>
+						<button class="btn sub-btn btn-success my-4 "
+							type="submit">update</button>
+						<a href="questionAns.php" <button class="btn sub-btn btn-danger my-4 "
+							type="button">cancel</button></a>
 					</div>
 				</form>
 			</div>
@@ -181,6 +223,34 @@ $errors=$validation->validateForm();
 	</section>
 	<br>
 	<br>
+
+	<script>
+	deletes = document.getElementsByClassName('delete');
+	Array.from(deletes).forEach((element) => {
+		element.addEventListener("click", (e) => {
+			console.log("edit ");
+			sno = e.target.id;
+			console.log(sno);
+			if (confirm("Are you sure you want to remove this Image!")) {
+				var imageBox = document.getElementById('imageBox');
+				imageBox.classList.add('d-none');
+				var imageUpload = document.getElementById('imageUrl');
+				imageUpload.classList.remove('d-none');
+				$.ajax({
+					url: 'ajax/answerEdit.php',
+					type: 'post',
+					data: 'lol=like,&sno=' + sno,
+					success: function(result) {
+
+					}
+
+				});
+			} else {
+				console.log("no");
+			}
+		})
+	})
+	</script>
 
 </body>
 

@@ -3,6 +3,7 @@ session_start();
 include 'include/db.connect.php';
 include 'include/Validation.php';
 $questionId=$_SESSION['questionId'];
+$userName=$_SESSION['userName'];
 
 
 //Getting all the value from the questions table
@@ -19,19 +20,45 @@ $answerUserName= $_SESSION["userName"];
 if (($_SERVER["REQUEST_METHOD"] == "POST")) {
  $text=$_POST['answerText'];
 
-//Getting all things done
-//$fileName=$_FILES[$file]['name'];
-	
 
 //Escaping from the special characters
 $us=new realEscape;
 $atext=$us->realString($text);
 $validation=new AnswerEditor($_POST);
-$errors=$validation->validateForm();
+
+
+$get=new CheckFields();
+$results=$get->check("SELECT * FROM `answer` where `ques_id`='$questionId' and `userName`='$userName'");		
+if($results>0){
+	$validation->addError("exist","You already answered this question");
+}
+
+if(!empty($_FILES["image"]["name"])) { 
+
+        // Get file info 
+        $fileName = basename($_FILES["image"]["name"]); 
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION); 
+
+        // Allow certain file formats 
+        $allowTypes = array('jpg','png','jpeg'); 
+        if(in_array($fileType, $allowTypes)){ 
+            $image = $_FILES['image']['tmp_name']; 
+            $imgContent = addslashes(file_get_contents($image)); 
+        }
+        else{
+		$validation->addError("type","Accept only jpg png jpeg formats only");
+        }
+
+    }
+    if(!isset($imageContent)){
+	$imageContent=null;
+    }
+
+    $errors=$validation->validateForm();
 
  if($errors==NULL){
 	$answer=new InsertData();
- 	$answerInsert=$answer->query("INSERT INTO `answer` (`ans_id`, `ques_id`, `userName`, `answer`, `DT`) VALUES (NULL,'$questionId', '$answerUserName','$atext', current_timestamp())");
+ 	$answerInsert=$answer->query("INSERT INTO `answer` (`ans_id`, `ques_id`, `userName`, `answer`,`ansImg`, `DT`) VALUES (NULL,'$questionId', '$answerUserName','$atext','$imgContent', current_timestamp())");
 	$_SESSION['ques_id']=$questionId;
 	 header("location:answer.php");
  	}
@@ -132,7 +159,7 @@ $errors=$validation->validateForm();
 			</div>
 			<div class="col-md-6 col-sm-9">
 				<h4 class="text-center ">Write your answer here. Limit 1800 characters</h4>
-				<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+				<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>"  enctype="multipart/form-data">
 					<div class=" flex-box">
 						<textarea id="textarea1" class="input shadow" name="answerText"
 							rows="15" cols="100" placeholder="Your text here ">
@@ -145,17 +172,17 @@ $errors=$validation->validateForm();
 					<div class="form-group">
 						<div class="image-upload my-4 text-center">
 							<label class="form-label" for="customFile">Upload Image</label>
-							<input type="file" class="form-control" name="uploadfile"
-								accept="image/x-png,image/gif,image/jpeg"
+							<input type="file" class="form-control" name="image"
+								
 								id="customFile" />
 
 						</div>
 					</div>
 					<div class="error my-2 text-center">
-						<?php echo $errors['fileExt'] ?? ''; ?>
+						<?php echo $errors['type'] ?? ''; ?>
 					</div>
 					<div class="error my-2 text-center">
-						<?php echo $errors['fileSize'] ?? ''; ?>
+						<?php echo $errors['exist'] ?? ''; ?>
 					</div>
 					<div class="d-flex justify-content-around">
 						<button class="btn sub-btn btn-success my-4 "

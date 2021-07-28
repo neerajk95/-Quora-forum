@@ -11,7 +11,9 @@
 	  $lastNamei=$data['lastName'];
 	  $userNamei=$data['userName'];
 	  $emaili=$data['email_id'];	
-	  $passwordi=md5($data['password']);
+	//   $phoneNumberi=$data['phno'];
+	//   $professioni=$data['profession'];
+	//   $dobi=$data['dob'];
     }
 
 
@@ -23,8 +25,25 @@
 	$lastName = $_POST['lastname'];
         $userName = $_POST['userName'];
 	$email = $_POST['email'];
-	$password =md5($_POST['password']);
-    
+	$phno=$_POST['phno'];
+	$profession=$_POST['profession'];
+	$dob=$_POST['dob'];
+	
+	$validation=new editProfile($_POST);//Passing all the posts value to UserValidation class
+
+//     //validation for phone number
+
+	// if(!preg_match("/^[0-9]{3}-[0-9]{4}-[0-9]{10}$/", $phno)) {
+	// 	$validation->addError("phno","please enter valid phone number");
+	// }
+
+    //validation for dob
+    function dateOfBirth($data){
+	if(date("Y/m/d")==
+    }
+
+
+
      //Creating object for checking username availvity
     $checkUsername=new CheckFields();
     $checkEmail=new CheckFields();
@@ -43,8 +62,7 @@
     }
 
     //Creating object of validation class for validating the form
-    $validation=new Signup($_POST);//Passing all the posts value to UserValidation class
-
+    
     //Passing the value to addError function because userName already exists
     if($userNameResult>0){
 	$validation->addError("userName","username already exists");
@@ -55,21 +73,20 @@
     }
     $errors=$validation->validateForm();
 
-    $firstNamei = $_POST['firstname'];
+        $firstNamei = $_POST['firstname'];
 	$lastNamei = $_POST['lastname'];
         $userNamei = $_POST['userName'];
 	$emaili = $_POST['email'];
-	$passwordi =md5($_POST['password']);
 
      //If no error insert data to db
      if($errors==null){
        
      //Saving the data to database
-    session_start();
+
     $_SESSION['Sign_Success']="true";
     $insertData=new InsertData();
-    $result= $insertData->query("INSERT INTO `users_info` (`userName`, `email_id`, `firstName`, `lastName`, `password`) VALUES ('$userName','$email','$firstName','$lastName','$password')");
-    header("location:login.php");
+    $result= $insertData->query("UPDATE `users_info` SET `userName` = '$userName', `email_id` = '$email', `firstName` = '$firstName', `lastName` = '$lastName',`dateOfBirth` = '$dob', `CurrentJob` = '$profession', `phno` = '$phno' WHERE `users_info`.`userName` = '$userName';");
+    //header("location:profile.php");
      }
    } 
   
@@ -196,24 +213,13 @@
 
 				<div class="form-group input my-3 ">
 					<label for="birthday">Birthday:</label>
-					<input type="date" id="birthday" name="birthday">
+					<input type="date" id="birthday" name="dob">
 					<div class="error">
-						<?php echo $errors['email'] ?? ''; ?>
+						<?php echo $errors['dob'] ?? ''; ?>
 					</div>
 
 				</div>
-				<div class="form-group my-3">
-						<div class="image-upload my-4 text-center">
-							<label class="form-label" for="customFile">Upload Image</label>
-							<input type="file" class="form-control" name="uploadfile"
-								accept="image/x-png,image/gif,image/jpeg"
-								id="customFile" />
-
-						</div>
-					</div>
-		
-
-
+				
 				<div class="button-bottom">
 					<button type="submit" name="submit" class="btn btn-success mt-3">Update</button>
 				</div>

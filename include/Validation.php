@@ -196,3 +196,27 @@ class AnswerEditor extends Validation
 		}
 	}
 }
+//Validation for signup
+class editProfile extends Validation
+{
+	function __construct($post_data)
+	{
+		$this->data = $post_data;
+	}
+	public function validateForm()
+	{
+		//Calling the function
+		$this->validateUserName();
+		$this->validateEmail();
+		$this->firstname();
+		$this->lastname();
+
+		//Validation for empty fields
+		$this->validateEmpty('userName', 'username');
+		$this->validateEmpty('firstname', 'firstname');
+		$this->validateEmpty('lastname', 'lastname');
+		$this->validateEmpty('email', 'email');
+		
+		return $this->errors;
+	}
+}

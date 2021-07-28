@@ -79,7 +79,11 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 				$questionId=$question['ques_Id'];
 				//echo $question["ques_Id"];	
 				$phpdate = strtotime( $question['post'] );
-			        $mysqldate = date( 'j  F, Y @ g:i a', $phpdate );		
+			        $mysqldate = date( 'j  F, Y @ g:i a', $phpdate );	
+				
+				$check= new CheckFields();
+				$checkExist=$check->check("SELECT * from `answer` where `ques_id`='$questionId'");
+				if($checkExist>0){
 				echo '	
 			<form method="GET" action="'.$_SERVER["PHP_SELF"].'">
 			<div class="d-flex  question-lists my-3">
@@ -95,7 +99,12 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
 			</div>
 			</form>';
 			}
+			else{
+				echo('<p class="my-4 " style="color:red;margin-left:5px;"><strong>No result found or No one answer this question. Please add questions</strong></p>');
+			}
 		        }
+		}
+		
 			?> 
 		<div class="btn-group me-2" role="group" aria-label="Second group">
 			<button type="text" class="btn btn-secondary">page no.</button>

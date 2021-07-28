@@ -13,7 +13,7 @@ $userName = $_SESSION['userName'];
 
  $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='$userName' order by q.post desc",6,0);
  $questionSet=$data->get();
- $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
+ $pageNumber=$data->pageNumber("SELECT * from `answer` WHERE `userName`='$userName'");
  
   if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['pagebutton'])){
 
@@ -24,7 +24,7 @@ $userName = $_SESSION['userName'];
 
   $data=new Pagination("SELECT u.userImage,q.ques_id,q.userName,q.post,q.question,a.ans_id,a.answer,a.userName as answerUserName from answer a inner JOIN questions q on q.ques_id=a.ques_id inner join users_info u on q.userName=u.userName where a.userName='$userName' order by q.post desc",6,$offset);
   $questionSet=$data->get();
-  $pageNumber=$data->pageNumber("SELECT * from `questions` WHERE `userName`='$userName'");
+  $pageNumber=$data->pageNumber("SELECT * from `answer` WHERE `userName`='$userName'");
   }
 
  
@@ -47,7 +47,15 @@ if(isset($_GET['delete'])){
 	header("location:answerUpdate.php");
         }
 
+	if (($_SERVER["REQUEST_METHOD"] == "GET") && isset($_GET['answer-click'])) {
+
+		$questionId = $_GET['answer-click'];
+		$_SESSION['ques_id'] = $questionId;
+		header("location:answer.php");
+	}
+
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -107,8 +115,9 @@ if(isset($_GET['delete'])){
 			      <p> by '.$question["userName"].' on '.$mysqldate.'</p>
 			      <div class="edit-btn d-flex justify-content-between">
 			      <input type="text" style="display:none;" name="questionId" value="'.$question['ques_id'].'">
+			    <p><button type="submit"  name="answer-click" value="' . $question['ques_id'] . '" class="btn  my-3 btn-primary">View</button></p>
 			      <p><button type="submit" value="'.$question["ans_id"].'" name="edit"  class="btn my-3 btn-warning ">Edit</button></p>
-			      <p><button type="button" id="'.$question["ans_id"].'" name="delete"  class="btn my-3 btn-danger delete">Delete Answer</button></p>
+			      <p><button type="button" id="'.$question["ans_id"].'" name="delete"  class="btn my-3 btn-danger delete">Delete</button></p>
 			    </div>
 			    </div>
 			  </div>
