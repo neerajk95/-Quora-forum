@@ -38,12 +38,7 @@
 	// }
 
     //validation for dob
-    function dateOfBirth($data){
-	if(date("Y/m/d")==
-    }
-
-
-
+   
      //Creating object for checking username availvity
     $checkUsername=new CheckFields();
     $checkEmail=new CheckFields();
@@ -62,7 +57,21 @@
     }
 
     //Creating object of validation class for validating the form
-    
+
+   if(isset($phno)){
+
+    if(preg_match('/^[0-9]{10}+$/', $phno)) {
+	$phoneNumber=$phno;
+      }
+      else{
+	$validation->addError("phno","Phone number is invalid");
+      }
+}
+
+
+
+
+
     //Passing the value to addError function because userName already exists
     if($userNameResult>0){
 	$validation->addError("userName","username already exists");
@@ -85,7 +94,7 @@
 
     $_SESSION['Sign_Success']="true";
     $insertData=new InsertData();
-    $result= $insertData->query("UPDATE `users_info` SET `userName` = '$userName', `email_id` = '$email', `firstName` = '$firstName', `lastName` = '$lastName',`dateOfBirth` = '$dob', `CurrentJob` = '$profession', `phno` = '$phno' WHERE `users_info`.`userName` = '$userName';");
+    $result= $insertData->query("UPDATE `users_info` SET `userName` = '$userName', `email_id` = '$email', `firstName` = '$firstName', `lastName` = '$lastName', `CurrentJob` = '$profession', `phno` = '$phoneNumber' WHERE `users_info`.`userName` = '$userName';");
     //header("location:profile.php");
      }
    } 
@@ -209,16 +218,9 @@
 						<?php echo $errors['profession'] ?? ''; ?>
 					</div>
 
-				</div>
+		
 
-				<div class="form-group input my-3 ">
-					<label for="birthday">Birthday:</label>
-					<input type="date" id="birthday" name="dob">
-					<div class="error">
-						<?php echo $errors['dob'] ?? ''; ?>
-					</div>
-
-				</div>
+			
 				
 				<div class="button-bottom">
 					<button type="submit" name="submit" class="btn btn-success mt-3">Update</button>
