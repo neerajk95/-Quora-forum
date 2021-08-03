@@ -138,16 +138,16 @@ if(isset($_POST['answer'])){
 				if($like==1){
 					echo '<script>
 					$(document).ready(function() {
-					$("#like_btn'.$answerId.'").addClass("btn-danger");
-					$("#like_btn'.$answerId.'").removeClass(" btn-outline-danger");		
+					$("#like_btn_'.$answerId.'").addClass("btn-danger");
+					$("#like_btn_'.$answerId.'").removeClass(" btn-outline-danger");		
 				         });
 					</script>';
 				}
 				if($dislike==1){
 					echo '<script>
 					$(document).ready(function() {
-					$("#dislike_btn'.$answerId.'").addClass("btn-danger");
-					$("#dislike_btn'.$answerId.'").removeClass(" btn-outline-danger");			
+					$("#dislike_btn_'.$answerId.'").addClass("btn-danger");
+					$("#dislike_btn_'.$answerId.'").removeClass(" btn-outline-danger");			
 				        });
 					</script>';
 				}
@@ -241,12 +241,12 @@ if(isset($_POST['answer'])){
 				}
 				//Function for dislike
 				function dislike_update(type, like_id, ans_id, ques_id, userName) {
-					var str = like_id.substring(7);
-					var dislike_id="like".concat(str);
-					var dislike_btn="dislike_btn_".concat(dislike_id);
-					var like_btn="like_btn_".concat(dislike_id);
-					console.log("hbdfth"+dislike_id);
-					console.log("Set ho gya mai dusri barr bhi");
+					
+					var dislike_btn="dislike_btn_".concat(ans_id);
+					var like_btn="like_btn_".concat(ans_id);
+					var dislike_id="like_".concat(ans_id);
+					console.log(dislike_id);
+					console.log(like_btn);
 					$.ajax({
 						url: 'ajax/likes.php',
 						type: 'post',

@@ -16,14 +16,7 @@ $insert=new InsertData();
 	if (in_array($fileType, $allowTypes)) {
 		$image = $_FILES['photoFile']['tmp_name'];
 		$imgContent = addslashes(file_get_contents($image));
-		$insert->query("update `users_info` set `userImage`='$imgContent' where `userName`='$userName'");
-		if($insert){
-			echo "Saved success fully";
-		}
-		else{
-			echo "An Error occured";
-		}
-
+		
 	} else {
 		echo "Accept only jpg png jpeg formats only";
 	}
